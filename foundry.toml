@@ -1,0 +1,27 @@
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.37"
+evm_version = "osaka"
+via_ir = true
+optimizer = true
+optimizer_runs = 1000000
+bytecode_hash = "none"
+remappings = [
+  "forge-std/=lib/forge-std/src/",
+  "permit2/=lib/permit2/",
+]
+
+[fuzz]
+runs = 5000
+
+[invariant]
+runs = 256
+depth = 64
+fail_on_revert = false
+
+[rpc_endpoints]
+robinhood = "https://rpc.mainnet.chain.robinhood.com"

@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jabba-Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000; --p1:#0B0B0B; --p2:#141414; --rule:#242424; --txt:#E6E6E6; --dim:#7D7D7D;
+  --amb:#FFB000; --amb-d:#3A2A00; --bid:#33D17A; --bid-d:#0C2A19; --ask:#FF5A4E; --ask-d:#2E0F0C; --cy:#5CC8FF;
+  --f:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  box-sizing:border-box; color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);
+}
+:root[data-theme="light"]{
+  --bg:#F2F0EA; --p1:#FFFFFF; --p2:#ECE9E1; --rule:#D5D1C6; --txt:#141414; --dim:#6B6A66;
+  --amb:#B46F00; --amb-d:#F6E7C8; --bid:#138A4B; --bid-d:#DDF1E5; --ask:#C8372C; --ask-d:#F7DEDB; --cy:#0A6FA8; color-scheme:light;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--txt);font:12.5px/1.45 var(--f);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:1px solid var(--amb);outline-offset:1px}
+
+/* function bar */
+.fbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:stretch;background:var(--amb);color:#000;font-weight:700;overflow-x:auto}
+.fbar .logo{padding:6px 12px;background:#000;color:var(--amb);white-space:nowrap}
+:root[data-theme="light"] .fbar .logo{background:#141414}
+.fbar button{background:none;border:0;border-right:1px solid rgba(0,0,0,.25);padding:6px 12px;font-weight:700;white-space:nowrap;color:#000}
+.fbar button kbd{font:inherit;opacity:.55;margin-right:6px}
+.fbar button[aria-pressed="true"]{background:#000;color:var(--amb)}
+.fbar .sp{flex:1}
+.fbar .st{padding:6px 12px;white-space:nowrap;font-weight:500}
+
+/* ticker strip */
+.strip{display:flex;gap:0;border-bottom:1px solid var(--rule);background:var(--p1);overflow-x:auto}
+.pair{background:none;border:0;border-right:1px solid var(--rule);padding:8px 14px;text-align:left;min-width:150px}
+.pair .s{color:var(--amb);font-weight:700}
+.pair .p{font-size:15px;font-weight:500}
+.pair .c{font-size:11px;color:var(--dim)}
+.pair[aria-pressed="true"]{background:var(--p2);box-shadow:inset 0 -2px var(--amb)}
+
+/* layout */
+.grid{display:grid;gap:1px;background:var(--rule);min-height:calc(100dvh - 110px)}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto 1fr}.tape{grid-column:1/-1}}
+.pane{background:var(--bg);padding:10px 12px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:baseline;color:var(--amb);font-weight:700;margin-bottom:6px}
+.ph span{color:var(--dim);font-weight:400}
+
+/* book */
+.bk{width:100%;border-collapse:collapse}
+.bk th{color:var(--dim);font-weight:400;text-align:right;padding:2px 6px;border-bottom:1px solid var(--rule)}
+.bk th:first-child,.bk td:first-child{text-align:left}
+.bk td{text-align:right;padding:3px 6px;white-space:nowrap;position:relative}
+.bk tr.lv{cursor:pointer}
+.bk tr.lv:hover td{background:var(--p2)}
+.bk tr.sel td{background:var(--amb-d)!important}
+.bk .ask{color:var(--ask)} .bk .bid{color:var(--bid)}
+.bk tr.off td{color:var(--dim);text-decoration:line-through;cursor:not-allowed}
+.depth{position:absolute;inset:1px 0 1px auto;z-index:-1;opacity:.9}
+.bk tr.a .depth{background:var(--ask-d)} .bk tr.b .depth{background:var(--bid-d)}
+.flag{display:inline-block;font-size:10px;padding:0 4px;margin-left:4px;border:1px solid currentColor;color:var(--amb);vertical-align:1px}
+.flag.x{color:var(--ask)}
+.mid td{padding:6px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);color:var(--dim)}
+.mid b{color:var(--txt);font-weight:500}
+.cross{color:#000;background:var(--amb);border:0;padding:1px 8px;font-weight:700;margin-left:8px}
+
+/* ticket */
+.side{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);margin-bottom:10px}
+.side button{border:0;padding:8px;background:var(--p2);font-weight:700;color:var(--dim)}
+.side button.b[aria-pressed="true"]{background:var(--bid);color:#000}
+.side button.s[aria-pressed="true"]{background:var(--ask);color:#000}
+.fld{display:grid;grid-template-columns:90px minmax(0,1fr) auto;align-items:center;gap:8px;border-bottom:1px solid var(--rule);padding:6px 0}
+.fld label{color:var(--dim)}
+.fld input{background:transparent;border:0;text-align:right;font-size:15px;width:100%;padding:2px 0}
+.fld input:focus{outline:none;box-shadow:inset 0 -1px var(--amb)}
+.fld .u{color:var(--dim);width:44px}
+.fld .v{text-align:right;font-size:15px}
+.ttl{display:flex;gap:1px;background:var(--rule);margin:10px 0}
+.ttl button{flex:1;border:0;background:var(--p2);padding:6px 0;color:var(--dim)}
+.ttl button[aria-pressed="true"]{color:#000;background:var(--amb)}
+.go{width:100%;border:0;padding:12px;font-weight:700;font-size:14px;margin-top:6px}
+.go.b{background:var(--bid);color:#000} .go.s{background:var(--ask);color:#000}
+.go:disabled{background:var(--p2);color:var(--dim);cursor:not-allowed}
+.msg{min-height:18px;margin-top:8px;color:var(--dim)}
+.msg.e{color:var(--ask)} .msg.w{color:var(--amb)}
+.pipe{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.pipe span{color:var(--dim)} .pipe span.ok{color:var(--bid)} .pipe span.run{color:var(--amb)} .pipe span.ko{color:var(--ask)}
+.mode{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:8px}
+.mode button{background:none;border:0;color:var(--cy);padding:0}
+
+/* tape */
+.tabs2{display:flex;gap:16px;margin-bottom:6px}
+.tabs2 button{background:none;border:0;padding:0;color:var(--dim);font-weight:700}
+.tabs2 button[aria-pressed="true"]{color:var(--amb)}
+.tp{width:100%;border-collapse:collapse}
+.tp td,.tp th{padding:3px 6px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--p2)}
+.tp th{color:var(--dim);font-weight:400}
+.tp td:first-child,.tp th:first-child{text-align:left}
+.tp .h{color:var(--cy)}
+.tp .x{background:none;border:1px solid var(--rule);color:var(--dim);padding:0 6px}
+.scroll{overflow-x:auto}
+.empty{color:var(--dim);padding:8px 0}
+.flash{animation:fl 1.2s ease-out}
+@keyframes fl{from{background:var(--amb-d)}to{background:transparent}}
+@media(prefers-reduced-motion:reduce){.flash{animation:none}}
+.foot{display:flex;gap:14px;flex-wrap:wrap;padding:6px 12px;color:var(--dim);border-top:1px solid var(--rule);background:var(--p1)}
+.foot button{background:none;border:0;padding:0;color:var(--dim);text-decoration:underline}
+.hide{display:none!important}
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.bar input{background:var(--p2);border:1px solid var(--rule);padding:5px 8px;min-width:0;flex:1}
+.chips{display:flex;gap:1px;background:var(--rule);flex-wrap:wrap}
+.chips button{border:0;background:var(--p2);padding:4px 9px;color:var(--dim)}
+.chips button[aria-pressed="true"]{background:var(--amb);color:#000;font-weight:700}
+.bk td.tk{color:var(--txt)} .bk .sym{color:var(--amb);font-weight:700}
+.bk .arr{color:var(--dim);padding:0 2px}
+.xbar{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--amb);padding:6px 8px;margin-bottom:8px;color:var(--amb)}
+.leg2{display:grid;grid-template-columns:90px minmax(0,1fr) 92px;align-items:center;gap:8px;border-bottom:1px solid var(--rule);padding:6px 0}
+.leg2 label{color:var(--dim)}
+.leg2 input{background:transparent;border:0;text-align:right;font-size:15px;width:100%;padding:2px 0}
+.leg2 input:focus{outline:none;box-shadow:inset 0 -1px var(--amb)}
+.leg2 select{background:var(--p2);border:1px solid var(--rule);padding:4px 6px;font-weight:700;color:var(--amb)}
+.leg2 .v{text-align:right;font-size:15px}
+.leg2 .sym{color:var(--amb);font-weight:700;text-align:right}
+.swap{display:flex;justify-content:flex-end;margin:2px 0}
+.swap button{background:none;border:1px solid var(--rule);color:var(--dim);padding:0 8px}
+.rate{color:var(--dim);padding:6px 0;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.rate b{color:var(--txt);font-weight:500}
+.bal2{color:var(--dim);font-size:11px;text-align:right;margin-top:-2px}
+
+
+/* ---- ottimizzazione spazi e grafica ---- */
+:root{--s1:4px;--s2:8px;--s3:12px;--s4:16px;--rowh:30px}
+body{font-size:12.5px}
+.fbar button,.fbar .logo,.fbar .st{padding:7px 12px}
+.grid{min-height:0;gap:1px}
+@media(min-width:900px){
+  .grid{grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto auto}
+  #bookPane{grid-row:1;grid-column:1} #ticket{grid-row:1/3;grid-column:2;position:sticky;top:31px;align-self:start}
+  .tape{grid-column:1;grid-row:2}
+}
+.pane{padding:var(--s3) var(--s4)}
+.ph{font-size:12px;letter-spacing:.02em;margin-bottom:var(--s2);padding-bottom:var(--s2);border-bottom:1px solid var(--rule)}
+.bar{margin-bottom:var(--s2);gap:var(--s2);flex-wrap:nowrap}
+.bar input{flex:0 1 220px;height:28px;padding:0 var(--s2)}
+.chips{flex:1;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;background:none;gap:4px}
+.chips::-webkit-scrollbar{display:none}
+.chips button{height:28px;padding:0 10px;border:1px solid var(--rule);background:transparent;white-space:nowrap}
+.chips button[aria-pressed="true"]{border-color:var(--amb)}
+.xbar{padding:var(--s1) var(--s2);margin-bottom:var(--s2)}
+.cross{height:22px}
+.bk{table-layout:auto}
+.bk th{font-size:11px;padding:var(--s1) var(--s2);position:sticky;top:0;background:var(--bg)}
+.bk td{height:var(--rowh);padding:0 var(--s2);border-bottom:1px solid var(--p2)}
+.bk tr.lv td:first-child{box-shadow:inset 2px 0 transparent}
+.bk tr.sel td{background:transparent!important}
+.bk tr.sel td:first-child{box-shadow:inset 2px 0 var(--amb)}
+.bk tr.sel td{color:var(--amb)}
+.bk .c-a{width:1%;padding:0 2px}
+.bk .c-t{width:1%}
+.u2{color:var(--dim)}
+.flag{font-size:9.5px;line-height:13px;padding:0 3px}
+.leg2{grid-template-columns:84px minmax(0,1fr) 84px;padding:var(--s2) 0;gap:var(--s2)}
+.leg2 input,.leg2 .v{font-size:16px}
+.leg2 select{height:30px;width:100%}
+.bal2{margin:var(--s1) 0 0}
+.swap{margin:var(--s1) 0 0}
+.swap button{height:24px}
+.rate{padding:var(--s2) 0;font-size:11.5px}
+.ttl{margin:var(--s3) 0 var(--s2)}
+.ttl button{height:30px;padding:0}
+.go{height:44px;padding:0;margin-top:var(--s2);letter-spacing:.04em}
+.msg{margin-top:var(--s2);min-height:16px;font-size:11.5px}
+.pipe{gap:var(--s3);margin-top:var(--s1);font-size:11.5px}
+.mode{margin:var(--s2) 0 0}
+.tabs2{margin-bottom:var(--s2);padding-bottom:var(--s2);border-bottom:1px solid var(--rule)}
+.tp td,.tp th{height:28px;padding:0 var(--s2)}
+.tp th{font-size:11px}
+.foot{padding:var(--s2) var(--s4);gap:var(--s3);font-size:11.5px}
+@media(pointer:coarse){.foot span:last-child{display:none}.fbar kbd{display:none}}
+@media(max-width:640px){
+  body{font-size:13px}
+  .pane{padding:var(--s3)}
+  .bar{flex-wrap:wrap}
+  .bar input{flex:1 1 100%}
+  .bk thead{display:none}
+  .bk tbody{display:block}
+  .bk tr.lv,.bk tr:not(.lv){display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"s a b t" "p p p m";align-items:center;column-gap:6px;padding:var(--s2) 0;border-bottom:1px solid var(--p2)}
+  .bk td{height:auto;padding:0;border:0;text-align:left}
+  .bk .c-s{grid-area:s}.bk .c-a{grid-area:a}.bk .c-b{grid-area:b}.bk .c-t{grid-area:t;text-align:right}
+  .bk .c-p{grid-area:p;font-size:11.5px;color:var(--dim)}.bk .c-m{grid-area:m;text-align:right;font-size:11.5px}
+  .bk tr.sel{box-shadow:inset 2px 0 var(--amb);padding-left:var(--s2)}
+  .bk tr.sel td:first-child{box-shadow:none}
+  .tp th:last-child,.tp td:last-child{display:none}
+  .foot{justify-content:space-between}
+}
+
+.grid{background:var(--bg);gap:0;min-height:calc(100dvh - 66px)}
+.tape{border-top:1px solid var(--rule)}
+@media(min-width:900px){.grid{grid-template-rows:auto 1fr} #ticket{border-left:1px solid var(--rule);align-self:stretch;position:static}
+  #ticket>*{position:relative} .tk-sticky{position:sticky;top:31px}}
+.bk td.c-s,.bk th.c-s{text-align:right}
+.bal2{display:flex;justify-content:flex-end;align-items:center;gap:var(--s3)}
+.lnk{background:none;border:0;color:var(--cy);padding:0}
+.swp{background:none;border:1px solid var(--rule);color:var(--dim);height:22px;padding:0 8px}
+@media(max-width:640px){
+  .bk tr.lv,.bk tr:not(.lv){grid-template-columns:auto auto minmax(0,1fr) 118px}
+  .bk td.c-s{text-align:left}
+  .bk .c-t,.bk .c-a{width:auto}
+  .fbar .st{display:none}
+  .fbar button{flex:1}
+}
+
+/* ---- wallet e bordi ---- */
+.fbar .wbtn{background:#000;color:var(--amb);border:0;padding:7px 14px;font-weight:700;white-space:nowrap}
+.fbar .wbtn.on{font-weight:500}
+:root[data-theme="light"] .fbar .wbtn{background:#141414}
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{width:100%;max-width:440px;background:var(--p1);border-top:2px solid var(--amb);padding:16px 20px calc(20px + env(safe-area-inset-bottom,0px))}
+@media(min-width:640px){.sheet{align-items:center}.sheet .box{border:1px solid var(--rule);border-top:2px solid var(--amb)}}
+.opt{display:flex;align-items:center;gap:10px;width:100%;height:46px;margin-top:8px;padding:0 14px;border:1px solid var(--rule);background:var(--p2);font-weight:700;text-align:left}
+.opt img{width:22px;height:22px}
+.opt.ghost{background:transparent;color:var(--amb);border-color:var(--amb)}
+.shn{color:var(--dim);font-size:12px;margin:10px 0 0;line-height:1.5}
+.cls{display:block;margin:14px auto 0}
+.kvw{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin-bottom:6px}
+.kvw span{color:var(--dim)} .kvw b{text-align:right;font-weight:500}
+.foot{padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+@media(max-width:640px){
+  .pane{padding:14px 18px}
+  #ticket{padding-bottom:20px}
+  .tape{padding-bottom:18px}
+  .foot{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+  .foot #acct{grid-column:1/-1}
+  .foot #trs{grid-column:1/-1}
+  .foot button{justify-self:start}
+  .fbar button{flex:0 0 auto}
+  .fbar .sp{flex:1}
+  .fbar .st{display:none}
+}
+
+@media(max-width:640px){
+  .fbar{overflow:hidden}
+  .fbar kbd{display:none}
+  .fbar button,.fbar .logo{padding:9px 10px}
+  .fbar .wbtn{margin-left:auto;padding:9px 12px;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+  .foot span:last-child{display:none}
+  .foot #fee{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<div class="fbar" role="toolbar">
+  <div class="logo">JABBA</div>
+  <button data-view="book" aria-pressed="true"><kbd>F1</kbd>LIBRO</button>
+  <button data-view="new" aria-pressed="false"><kbd>F2</kbd>NUOVO</button>
+  <button data-view="mine" aria-pressed="false"><kbd>F3</kbd>ORDINI</button>
+  <div class="sp"></div>
+  <div class="st" id="st">RH 4663</div>
+  <button class="wbtn" id="wbtn" aria-haspopup="dialog">CONNETTI</button>
+</div>
+
+<div class="grid">
+  <section class="pane" id="bookPane"></section>
+  <section class="pane" id="ticket"></section>
+  <section class="pane tape" id="tape"></section>
+</div>
+<div class="foot">
+  <span id="acct"></span><span id="fee"></span><span id="trs"></span>
+  <button id="theme">tema</button><button id="reset">reset</button>
+  <span>tasti: / filtra · N nuovo ordine · Invio esegue · Esc annulla</span>
+</div>
+
+<div class="sheet hide" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="box" id="sheetBox"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.15.0/ethers.umd.min.js"></script>
+<script>
+(() => {
+"use strict";
+const E = window.ethers, $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------------- protocollo (identico alla specifica v2.3) ---------------- */
+const CHAIN_ID=4663, PERMIT2="0x000000000022D473030F116dDEE9F6B43aC78BA3";
+const JABBA="0x5eed00000000000000000000000000000000a11c", TREASURY="0x7ea5000000000000000000000000000000000001";
+const DOMAIN={name:"Permit2",chainId:CHAIN_ID,verifyingContract:PERMIT2};
+const TYPES={PermitWitnessTransferFrom:[{name:"permitted",type:"TokenPermissions"},{name:"spender",type:"address"},{name:"nonce",type:"uint256"},{name:"deadline",type:"uint256"},{name:"witness",type:"Order"}],
+  TokenPermissions:[{name:"token",type:"address"},{name:"amount",type:"uint256"}],Order:[{name:"buyToken",type:"address"},{name:"buyAmount",type:"uint256"}]};
+const ENC=E.TypedDataEncoder.from(TYPES), ABI=E.AbiCoder.defaultAbiCoder();
+const now=()=>Math.floor(Date.now()/1000), T0=now();
+const TK={
+  USDG:{sym:"USDG",dec:6,kind:"erc20",addr:"0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168"},
+  NVDA:{sym:"NVDA",dec:18,kind:"stock",mult:1,addr:"0x0000000000000000000000000000000000057001",ref:184.2},
+  AAPL:{sym:"AAPL",dec:18,kind:"stock",mult:1,newMult:1.004,effectiveAt:T0+40*60,addr:"0x0000000000000000000000000000000000057002",ref:231.4},
+  WETH:{sym:"WETH",dec:18,kind:"erc20",addr:"0x00000000000000000000000000000000000e7401",ref:3152},
+  TSLA:{sym:"TSLA",dec:18,kind:"stock",mult:1,addr:"0x0000000000000000000000000000000000057003",ref:248.7},
+  PEPE:{sym:"PEPE",dec:18,kind:"fot",addr:"0x0000000000000000000000000000000000fee001"}
+};
+const PAIRS=["NVDA","AAPL","WETH"];
+const tok=a=>Object.values(TK).find(t=>t.addr.toLowerCase()===String(a).toLowerCase());
+const tv=o=>({permitted:{token:o.sellToken,amount:o.sellAmount},spender:JABBA,nonce:o.nonce,deadline:o.deadline,witness:{buyToken:o.buyToken,buyAmount:o.buyAmount}});
+const oHash=o=>E.keccak256(ABI.encode(["address","bytes32"],[o.maker,ENC.hashStruct("PermitWitnessTransferFrom",tv(o))]));
+const rnd=()=>BigInt(E.hexlify(E.randomBytes(31)));
+async function sign(w,o){const sig=await w.signTypedData(DOMAIN,TYPES,tv(o));const f={...o,maker:w.address,sig};f.hash=oHash(f);return f;}
+
+/* ---------------- chain simulata ---------------- */
+let S, ME, MK;
+const k=(a,b)=>a.toLowerCase()+":"+b.toLowerCase();
+const bal=(w,t)=>S.bal[k(w,t.addr)]??0n, setB=(w,t,v)=>S.bal[k(w,t.addr)]=v, alw=(w,t)=>S.alw[k(w,t.addr)]??0n;
+const nUsed=(w,n)=>(((S.bm[k(w,(n>>8n).toString(16))]??0n)>>(n&255n))&1n)===1n;
+const nUse=(w,n)=>{const kk=k(w,(n>>8n).toString(16));S.bm[kk]=(S.bm[kk]??0n)|(1n<<(n&255n));};
+const d7702=w=>(S.code[w.toLowerCase()]??"").startsWith("0xef0100");
+function xfer(t,f,to,a){if(bal(f,t)<a)throw Error("saldo insufficiente");if(alw(f,t)<a)throw Error("approve insufficiente");
+  S.alw[k(f,t.addr)]=alw(f,t)-a;setB(f,t,bal(f,t)-a);setB(to,t,bal(to,t)+(t.kind==="fot"?a-a/100n:a));}
+
+function flags(o){ // requisiti del terminale
+  const f=[], s=tok(o.sellToken), b=tok(o.buyToken);
+  if(o.deadline<=BigInt(now())||nUsed(o.maker,o.nonce)||bal(o.maker,s)<o.sellAmount||alw(o.maker,s)<o.sellAmount) f.push(["x","KO"]);
+  if(s.kind==="fot"||b.kind==="fot") f.push(["x","FOT"]);
+  if(d7702(o.maker)) f.push(["w","7702"]);
+  for(const t of [s,b]) if(t.newMult&&o.deadline>BigInt(t.effectiveAt)) f.push(["w","CA"]);
+  return f;
+}
+const dead=o=>o.status!=="open"||flags(o).some(([c])=>c==="x");
+
+function match(A,B,sub,val,dry){
+  const snap=structuredClone(S);
+  const ko=m=>{S=snap;return{ok:false,err:m};};
+  try{
+    if(A.maker.toLowerCase()===B.maker.toLowerCase())return ko("SelfMatch");
+    if(A.sellToken!==B.buyToken||B.sellToken!==A.buyToken)return ko("TokenMismatch");
+    if(A.sellAmount<B.buyAmount||B.sellAmount<A.buyAmount)return ko("PriceNotCrossed");
+    if(val!==S.fee)return ko("WrongFee");
+    for(const o of [A,B]){
+      if(o.deadline<BigInt(now()))return ko("SignatureExpired");
+      if(nUsed(o.maker,o.nonce))return ko("InvalidNonce");
+      if(E.verifyTypedData(DOMAIN,TYPES,tv(o),o.sig).toLowerCase()!==o.maker.toLowerCase())return ko("InvalidSigner");
+      nUse(o.maker,o.nonce);
+    }
+    const ab=tok(A.buyToken),bb=tok(B.buyToken),a0=bal(A.maker,ab),b0=bal(B.maker,bb);
+    xfer(tok(A.sellToken),A.maker,B.maker,A.sellAmount); xfer(tok(B.sellToken),B.maker,A.maker,B.sellAmount);
+    if(bal(A.maker,ab)-a0<B.sellAmount||bal(B.maker,bb)-b0<A.sellAmount)return ko("ShortReceipt");
+    const e=S.eth[sub.toLowerCase()]??0n; if(e<val)return ko("ETH insufficiente");
+    S.eth[sub.toLowerCase()]=e-val; S.trs+=val;
+    if(dry){S=snap;return{ok:true};}
+    for(const o of S.orders) if(o.hash===A.hash||o.hash===B.hash)o.status="filled";
+    S.tape.unshift({t:now(),A,B,sub,fee:val});
+    return{ok:true};
+  }catch(e){return ko(String(e.message));}
+}
+
+/* ---------------- seed ---------------- */
+async function seed(){
+  S={fee:50000000000000n,eth:{},bal:{},alw:{},bm:{},code:{},orders:[],tape:[],trs:0n};
+  MK=Array.from({length:8},()=>E.Wallet.createRandom());
+  const fund=(w,m)=>{S.eth[w.address.toLowerCase()]=E.parseEther("0.02");for(const[s,v]of Object.entries(m)){const t=TK[s],r=E.parseUnits(v,t.dec);setB(w.address,t,r);S.alw[k(w.address,t.addr)]=r;}};
+  if(ME) fundMe();
+  MK.forEach(w=>fund(w,{USDG:"80000",NVDA:"60",AAPL:"40",WETH:"8",TSLA:"30",PEPE:"1000000000"}));
+  S.code[MK[2].address.toLowerCase()]="0xef0100"+"63c0c19a282a1b52b07dd5a65b58948a07dae32b";
+  const T=now();
+  // ordine generico: vende sa di s, vuole almeno ba di b
+  const put=async(w,s,sa,b,ba,ttl)=>{const o=await sign(w,{sellToken:TK[s].addr,sellAmount:E.parseUnits(String(sa),TK[s].dec),
+    buyToken:TK[b].addr,buyAmount:E.parseUnits(String(ba),TK[b].dec),nonce:rnd(),deadline:BigInt(T+ttl)});o.status="open";o.t=T-Math.floor(Math.random()*900);S.orders.push(o);return o;};
+  await put(MK[0],"NVDA",2,"USDG",368.62,18*60);
+  await put(MK[1],"NVDA",5,"USDG",922.5,33*60);
+  await put(MK[3],"USDG",551.4,"NVDA",3,26*60);
+  await put(MK[4],"USDG",925,"NVDA",5,31*60);            // incrocia con il secondo ordine NVDA (stessa taglia)
+  await put(MK[5],"WETH",0.5,"USDG",1577,24*60);
+  await put(MK[2],"WETH",1.2,"USDG",3790,20*60);         // maker 7702
+  await put(MK[6],"USDG",3140,"WETH",1,44*60);
+  await put(MK[7],"NVDA",10,"WETH",0.59,50*60);          // token contro token
+  await put(MK[0],"WETH",0.3,"TSLA",3.8,38*60);
+  await put(MK[1],"AAPL",4,"USDG",927,90*60);            // corporate action prima della scadenza
+  await put(MK[3],"TSLA",2,"AAPL",2.15,28*60);
+  await put(MK[4],"PEPE",500000000,"USDG",4900,40*60);   // fee-on-transfer
+  const st=await put(MK[6],"USDG",9000,"WETH",2.8,30*60); nUse(st.maker,st.nonce); // cancellato
+}
+
+/* ---------------- wallet ---------------- */
+const W={kind:"none",label:"",chain:null}; const PROV=[];
+addEventListener("eip6963:announceProvider",e=>{const d=e.detail;if(d?.info&&d.provider&&!PROV.some(p=>p.info.uuid===d.info.uuid))PROV.push(d);if(!$("#sheet").classList.contains("hide"))renderSheet();});
+try{dispatchEvent(new Event("eip6963:requestProvider"));}catch{}
+function fundMe(){ // saldi simulati per l'account collegato
+  const a=ME.address; S.eth[a.toLowerCase()]=S.eth[a.toLowerCase()]??E.parseEther("0.02");
+  for(const [s,v] of Object.entries({USDG:"25000",NVDA:"20",AAPL:"5",WETH:"2",TSLA:"4"})){const t=TK[s];if(!(k(a,t.addr) in S.bal)){setB(a,t,E.parseUnits(v,t.dec));S.alw[k(a,t.addr)]=0n;}}
+}
+function providers(){const l=[...PROV];if(!l.length&&window.ethereum)l.push({info:{uuid:"legacy",name:"Wallet del browser"},provider:window.ethereum});return l;}
+function renderSheet(){
+  const l=providers(), box=$("#sheetBox");
+  if(W.kind!=="none"){box.innerHTML=`<div class="ph" id="shT">WALLET <span>${esc(W.label)}</span></div>
+    <div class="kvw"><span>indirizzo</span><b>${sh(ME.address)}</b><span>rete</span><b>${W.kind==="demo"?"simulata":W.chain===4663?"Robinhood Chain":"rete errata"}</b></div>
+    <button class="opt" data-w="off">DISCONNETTI</button><button class="lnk cls" data-w="close">chiudi</button>`;return;}
+  box.innerHTML=`<div class="ph" id="shT">CONNETTI WALLET <span>Robinhood Chain 4663</span></div>
+    ${l.map((p,i)=>`<button class="opt" data-w="p${i}">${p.info.icon?`<img src="${esc(p.info.icon)}" alt="">`:""}${esc(p.info.name)}</button>`).join("")||
+      `<p class="shn">Nessun wallet in questa pagina. Apri il terminale nel browser del tuo wallet, oppure prova con un account demo.</p>`}
+    <button class="opt ghost" data-w="demo">ACCOUNT DEMO</button>
+    <p class="shn">Le firme sono reali, la chain è simulata.</p>
+    <button class="lnk cls" data-w="close">chiudi</button>`;
+}
+function openSheet(){renderSheet();$("#sheet").classList.remove("hide");$("#sheetBox button")?.focus();}
+const closeSheet=()=>$("#sheet").classList.add("hide");
+async function connectInjected(p){
+  const eth=p.provider;
+  try{
+    await eth.request({method:"eth_requestAccounts"});
+    try{await eth.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x1237"}]});}
+    catch(err){if(err?.code===4902)await eth.request({method:"wallet_addEthereumChain",params:[{chainId:"0x1237",chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://rpc.mainnet.chain.robinhood.com"]}]});else throw err;}
+    const bp=new E.BrowserProvider(eth), signer=await bp.getSigner(), net=await bp.getNetwork();
+    ME={address:signer.address,signTypedData:(d,t,v)=>signer.signTypedData(d,t,v)};
+    W.kind="injected";W.label=p.info.name;W.chain=Number(net.chainId);
+    eth.on?.("accountsChanged",()=>disconnect()); eth.on?.("chainChanged",c=>{W.chain=Number(c);render();});
+    fundMe(); closeSheet(); U.msg=["","connesso: "+sh(ME.address)]; render();
+  }catch(err){U.msg=["e",err?.code===4001?"connessione rifiutata nel wallet":"connessione non riuscita"];closeSheet();render();}
+}
+function connectDemo(){ME=E.Wallet.createRandom();W.kind="demo";W.label="account demo";W.chain=4663;fundMe();closeSheet();U.msg=["","account demo pronto"];render();}
+function disconnect(){ME=null;W.kind="none";W.label="";W.chain=null;reset();closeSheet();render();}
+
+/* ---------------- vista ---------------- */
+const U={view:"book",sel:null,f:"",chip:"TUTTI",sell:"USDG",sa:"",buy:"NVDA",ba:"",ttl:900,run:null,msg:null,tape:"fills"};
+const nf=(d)=>new Intl.NumberFormat("it-IT",{maximumFractionDigits:d});
+const num=(r,t)=>Number(E.formatUnits(r,t.dec));
+const q=(r,t)=>{const v=num(r,t);return nf(v>=1000?2:v>=1?4:8).format(v);};
+const sh=a=>a.slice(0,6)+"…"+a.slice(-4);
+const LIST=Object.values(TK).filter(t=>t.kind!=="fot");
+
+function crossing(){ // qualsiasi coppia del libro che soddisfa le precondizioni della specifica
+  const open=S.orders.filter(o=>!dead(o)&&o.maker!==ME?.address);
+  for(let i=0;i<open.length;i++)for(let j=i+1;j<open.length;j++){const A=open[i],B=open[j];
+    if(A.maker!==B.maker&&A.sellToken===B.buyToken&&B.sellToken===A.buyToken&&A.sellAmount>=B.buyAmount&&B.sellAmount>=A.buyAmount)return[A,B];}
+  return null;
+}
+function visible(){
+  const f=U.f.trim().toUpperCase();
+  return S.orders.filter(o=>o.status==="open").filter(o=>{const a=tok(o.sellToken).sym,b=tok(o.buyToken).sym;
+    if(U.chip!=="TUTTI"&&a!==U.chip&&b!==U.chip)return false;
+    return !f||a.includes(f)||b.includes(f)||o.maker.toUpperCase().includes(f)||o.hash.toUpperCase().includes(f);})
+   .sort((x,y)=>dead(x)-dead(y)||Number(x.deadline-y.deadline));
+}
+function renderBook(){
+  const rows=visible(), cr=crossing(), syms=["TUTTI",...new Set(S.orders.filter(o=>o.status==="open").flatMap(o=>[tok(o.sellToken).sym,tok(o.buyToken).sym]))];
+  $("#bookPane").innerHTML=`<div class="ph">LIBRO ORDINI <span>${S.orders.filter(o=>o.status==="open").length} ordini</span></div>
+    <div class="bar"><input id="flt" placeholder="filtra token, maker o hash" value="${esc(U.f)}"><div class="chips">${syms.map(s=>`<button data-chip="${s}" aria-pressed="${U.chip===s}">${s}</button>`).join("")}</div></div>
+    ${cr?`<div class="xbar"><span>INCROCIO · ${q(cr[0].sellAmount,tok(cr[0].sellToken))} ${tok(cr[0].sellToken).sym} ⇄ ${q(cr[1].sellAmount,tok(cr[1].sellToken))} ${tok(cr[1].sellToken).sym}</span><button class="cross" data-cross>MATCH</button></div>`:""}
+    <div class="scroll"><table class="bk"><thead><tr><th class="c-s">VENDE</th><th class="c-a"></th><th class="c-b">PER ALMENO</th><th class="c-p">PREZZO</th><th class="c-m">MAKER</th><th class="c-t">SCAD</th></tr></thead><tbody>
+    ${rows.length?rows.map(o=>{const a=tok(o.sellToken),b=tok(o.buyToken),off=dead(o),mine=o.maker===ME?.address,fl=flags(o).filter(([c])=>c!=="x"||off);
+      const r=num(o.buyAmount,b)/num(o.sellAmount,a);
+      return `<tr class="lv ${off?"off":""} ${U.sel?.hash===o.hash?"sel":""}" data-o="${o.hash}" ${off||mine?"":'tabindex="0"'}>
+        <td class="c-s tk">${q(o.sellAmount,a)} <span class="sym">${a.sym}</span></td><td class="c-a arr">→</td>
+        <td class="c-b tk">${q(o.buyAmount,b)} <span class="sym">${b.sym}</span></td>
+        <td class="c-p">${nf(r>=1?2:6).format(r)} <span class="u2">${b.sym}/${a.sym}</span></td>
+        <td class="c-m">${mine?'<span class="flag">TU</span>':`<span class="u2">${sh(o.maker)}</span>`}${fl.map(([c,t])=>`<span class="flag ${c}">${t}</span>`).join("")}</td>
+        <td class="c-t u2">${Math.max(0,Math.round((Number(o.deadline)-now())/60))}m</td></tr>`;}).join("")
+      :`<tr><td colspan="6" class="empty">nessun ordine per questo filtro</td></tr>`}</tbody></table></div>`;
+}
+
+function renderTicket(){
+  if(!ME){ $("#ticket").innerHTML=`<div class="ph">TICKET <span>nessun wallet</span></div>
+    <p class="shn" style="margin:0 0 12px">Collega un wallet per pubblicare ordini o chiudere quelli del libro.</p>
+    <button class="go s" data-connect>CONNETTI WALLET</button>`; return; }
+  const el=$("#ticket"), pipe=U.run?`<div class="pipe">${U.run.map(([n,s])=>`<span class="${s}">${s==="ok"?"✓":s==="ko"?"✗":s==="run"?"›":"·"} ${n}</span>`).join("")}</div>`:"";
+  const fee=`<div class="leg2"><label>Fee</label><div class="v">${nf(5).format(Number(E.formatEther(S.fee)))}</div><div class="sym">ETH</div></div>`;
+  if(U.sel){ // chiusura di un ordine del libro
+    const o=U.sel,a=tok(o.sellToken),b=tok(o.buyToken),have=bal(ME.address,b);
+    let w=have<o.buyAmount?["e",`saldo ${b.sym} insufficiente: ${q(have,b)}`]:flags(o).some(([,t])=>t==="7702")?["w","maker 7702: firma verificata via ERC-1271"]:null;
+    const r=num(o.buyAmount,b)/num(o.sellAmount,a);
+    el.innerHTML=`<div class="ph">TICKET <span>chiusura · controparte ${sh(o.maker)}</span></div>
+      <div class="leg2"><label>Cedi</label><div class="v">${q(o.buyAmount,b)}</div><div class="sym">${b.sym}</div></div>
+      <div class="bal2">disponibili ${q(have,b)} ${b.sym}</div>
+      <div class="leg2"><label>Ricevi</label><div class="v">${q(o.sellAmount,a)}</div><div class="sym">${a.sym}</div></div>
+      <div class="rate"><span>1 ${a.sym} = <b>${nf(r>=1?4:6).format(r)}</b> ${b.sym}</span><span>1 ${b.sym} = <b>${nf(1/r>=1?4:6).format(1/r)}</b> ${a.sym}</span></div>
+      ${fee}
+      <button class="go b" id="go" ${w?.[0]==="e"||U.busy?"disabled":""}>ESEGUI</button>
+      <div class="mode" style="margin-top:8px"><span></span><button data-clear>annulla</button></div>
+      <div class="msg ${U.msg?.[0]??w?.[0]??""}">${esc(U.msg?.[1]??w?.[1]??"approve esatto → firma → simulazione → match")}</div>${pipe}`;
+    return;
+  }
+  // nuovo ordine generico: qualsiasi token contro qualsiasi token
+  const A=TK[U.sell],B=TK[U.buy],sa=parseFloat(String(U.sa).replace(",",".")),ba=parseFloat(String(U.ba).replace(",","."));
+  const have=num(bal(ME.address,A),A);
+  let w=null;
+  if(U.sell===U.buy)w=["e","scegli due token diversi"];
+  else if(sa>have)w=["e",`saldo ${A.sym} insufficiente: ${nf(4).format(have)}`];
+  for(const t of [A,B]) if(!w&&t.newMult&&now()+U.ttl>t.effectiveAt) w=["e",`corporate action ${t.sym} tra ${Math.round((t.effectiveAt-now())/60)}m: scadenza più breve`];
+  const ok=sa>0&&ba>0&&!w, r=ok?ba/sa:null;
+  const opt=s=>LIST.map(t=>`<option ${t.sym===s?"selected":""}>${t.sym}</option>`).join("");
+  el.innerHTML=`<div class="ph">TICKET <span>nuovo ordine</span></div>
+    <div class="leg2"><label>Vendi</label><input id="sa" inputmode="decimal" placeholder="0" value="${esc(U.sa)}"><select id="sell">${opt(U.sell)}</select></div>
+    <div class="bal2"><span>disponibili ${nf(4).format(have)} ${A.sym} <button class="lnk" data-max>max</button></span><button class="swp" data-swap title="Inverti i lati" aria-label="Inverti i lati">⇅</button></div>
+    <div class="leg2"><label>Per almeno</label><input id="ba" inputmode="decimal" placeholder="0" value="${esc(U.ba)}"><select id="buy">${opt(U.buy)}</select></div>
+    <div class="rate">${r?`<span>1 ${A.sym} = <b>${nf(r>=1?4:6).format(r)}</b> ${B.sym}</span><span>1 ${B.sym} = <b>${nf(1/r>=1?4:6).format(1/r)}</b> ${A.sym}</span>`:"<span>il prezzo è il rapporto tra le due quantità</span>"}</div>
+    ${fee}
+    <div class="ttl">${[[300,"5m"],[900,"15m"],[3600,"1h"],[14400,"4h"]].map(([v,l])=>`<button data-ttl="${v}" aria-pressed="${U.ttl===v}">${l}</button>`).join("")}</div>
+    <button class="go s" id="go" ${ok&&!U.busy?"":"disabled"}>FIRMA E PUBBLICA</button>
+    <div class="msg ${U.msg?.[0]??w?.[0]??""}">${esc(U.msg?.[1]??w?.[1]??"tutto-o-niente · la fee la paga chi chiude")}</div>${pipe}`;
+}
+function renderTape(){
+  const mine=ME?S.orders.filter(o=>o.maker===ME.address):[];
+  const head=`<div class="tabs2"><button data-tape="fills" aria-pressed="${U.tape==="fills"}">NASTRO ${S.tape.length||""}</button><button data-tape="mine" aria-pressed="${U.tape==="mine"}">I MIEI ORDINI ${mine.filter(o=>o.status==="open").length||""}</button></div>`;
+  let body;
+  if(U.tape==="fills") body=S.tape.length?`<table class="tp"><thead><tr><th>ORA</th><th>A CEDE</th><th>B CEDE</th><th>FEE ETH</th><th>ORDERHASH A / B</th></tr></thead><tbody>${S.tape.map((f,i)=>{
+      const a=tok(f.A.sellToken),b=tok(f.B.sellToken);
+      return `<tr class="${i===0&&U.flash?"flash":""}"><td>${new Date(f.t*1000).toLocaleTimeString("it-IT")}</td><td>${q(f.A.sellAmount,a)} ${a.sym}</td><td>${q(f.B.sellAmount,b)} ${b.sym}</td><td>${nf(5).format(Number(E.formatEther(f.fee)))}</td><td class="h">${f.A.hash.slice(0,10)}… / ${f.B.hash.slice(0,10)}…</td></tr>`;}).join("")}</tbody></table>`
+    :`<div class="empty">nessun match ancora</div>`;
+  else body=mine.length?`<table class="tp"><thead><tr><th>ORDINE</th><th>VENDE</th><th>PER ALMENO</th><th>STATO</th><th></th></tr></thead><tbody>${mine.map(o=>{const s=tok(o.sellToken),b=tok(o.buyToken);
+      return `<tr><td class="h">${o.hash.slice(0,10)}…</td><td>${q(o.sellAmount,s)} ${s.sym}</td><td>${q(o.buyAmount,b)} ${b.sym}</td><td>${o.status==="open"?"aperto":o.status==="filled"?"eseguito":"cancellato"}</td><td>${o.status==="open"?`<button class="x" data-cancel="${o.hash}">cancella</button>`:""}</td></tr>`;}).join("")}</tbody></table>`
+    :`<div class="empty">nessun ordine tuo</div>`;
+  $("#tape").innerHTML=head+`<div class="scroll">${body}</div>`;
+}
+function renderFoot(){
+  const wb=$("#wbtn"); wb.textContent=ME?sh(ME.address):"CONNETTI"; wb.classList.toggle("on",!!ME);
+  $("#st").textContent=W.kind==="injected"?(W.chain===4663?"RH 4663":"RETE ERRATA"):W.kind==="demo"?"RH 4663 · DEMO":"RH 4663";
+  if(!ME){$("#acct").textContent="wallet non connesso";$("#fee").textContent="fee "+nf(5).format(Number(E.formatEther(S.fee)))+" ETH/match";$("#trs").textContent="tesoriere "+nf(5).format(Number(E.formatEther(S.trs)))+" ETH";return;}
+  $("#acct").textContent="acct "+sh(ME.address)+" · "+nf(5).format(Number(E.formatEther(S.eth[ME.address.toLowerCase()]??0n)))+" ETH";
+  $("#fee").textContent="fee "+nf(5).format(Number(E.formatEther(S.fee)))+" ETH/match";
+  $("#trs").textContent="tesoriere "+nf(5).format(Number(E.formatEther(S.trs)))+" ETH";
+}
+function render(){
+  for(const b of document.querySelectorAll("[data-view]"))b.setAttribute("aria-pressed",b.dataset.view===U.view);
+  renderBook();renderTicket();renderTape();renderFoot();
+}
+
+/* ---------------- azioni ---------------- */
+const pause=ms=>new Promise(r=>setTimeout(r,matchMedia("(prefers-reduced-motion: reduce)").matches?0:ms));
+const reset=()=>{U.sel=null;U.run=null;U.msg=null;};
+async function execute(){
+  U.busy=true; U.msg=null;
+  if(U.sel){
+    const A=U.sel, pay=tok(A.buyToken), got=tok(A.sellToken);
+    U.run=[["approve","run"],["firma",""],["simula",""],["match",""]]; render();
+    await pause(350); if(alw(ME.address,pay)<A.buyAmount)S.alw[k(ME.address,pay.addr)]=A.buyAmount; U.run[0][1]="ok"; U.run[1][1]="run"; render();
+    const B=await sign(ME,{sellToken:A.buyToken,sellAmount:A.buyAmount,buyToken:A.sellToken,buyAmount:A.sellAmount,nonce:rnd(),deadline:BigInt(now()+300)});
+    await pause(350); U.run[1][1]="ok"; U.run[2][1]="run"; render();
+    const sim=match(A,B,ME.address,S.fee,true); await pause(350);
+    if(!sim.ok){U.run[2][1]="ko";U.msg=["e","revert previsto: "+sim.err];U.busy=false;return render();}
+    U.run[2][1]="ok"; U.run[3][1]="run"; render(); await pause(350);
+    const r=match(A,B,ME.address,S.fee,false);
+    if(!r.ok){U.run[3][1]="ko";U.msg=["e","revert: "+r.err];U.busy=false;return render();}
+    U.run[3][1]="ok"; U.msg=["",`ricevuti ${q(A.sellAmount,got)} ${got.sym}`]; U.sel=null; U.flash=true; U.tape="fills";
+  } else {
+    const A=TK[U.sell],B=TK[U.buy];
+    const o={sellToken:A.addr,sellAmount:E.parseUnits(String(U.sa).replace(",","."),A.dec),buyToken:B.addr,buyAmount:E.parseUnits(String(U.ba).replace(",","."),B.dec)};
+    U.run=[["approve","run"],["firma",""],["post",""]]; render();
+    await pause(300); if(alw(ME.address,A)<o.sellAmount)S.alw[k(ME.address,A.addr)]=o.sellAmount; U.run[0][1]="ok";U.run[1][1]="run";render();
+    const s=await sign(ME,{...o,nonce:rnd(),deadline:BigInt(now()+U.ttl)}); s.status="open"; s.t=now(); S.orders.push(s);
+    await pause(300); U.run[1][1]="ok";U.run[2][1]="ok"; U.msg=["","ordine "+s.hash.slice(0,10)+"… nel libro"]; U.sa=""; U.ba="";
+  }
+  U.busy=false; render(); setTimeout(()=>{U.flash=false;},1300);
+}
+document.addEventListener("click",async e=>{
+  if(e.target.id==="sheet")return closeSheet();
+  const b=e.target.closest("button,tr.lv"); if(!b)return;
+  if(b.matches("tr.lv")){const o=S.orders.find(x=>x.hash===b.dataset.o); if(!o||dead(o)||o.maker===ME?.address)return; if(!ME)return openSheet(); U.sel=o;U.run=null;U.msg=null;U.view="book";render();if(innerWidth<900)$("#ticket").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});return;}
+  if(b.dataset.chip){U.chip=b.dataset.chip;return renderBook();}
+  if(b.dataset.ttl){U.ttl=+b.dataset.ttl;return renderTicket();}
+  if(b.dataset.swap!==undefined){[U.sell,U.buy,U.sa,U.ba]=[U.buy,U.sell,U.ba,U.sa];return renderTicket();}
+  if(b.dataset.max!==undefined){const t=TK[U.sell];U.sa=String(num(bal(ME.address,t),t));return renderTicket();}
+  if(b.dataset.clear!==undefined){reset();return render();}
+  if(b.dataset.tape){U.tape=b.dataset.tape;return renderTape();}
+  if(b.dataset.view){U.view=b.dataset.view;
+    if(U.view==="new"){reset();render();$("#ticket").scrollIntoView({block:"start"});$("#sa")?.focus();return;}
+    if(U.view==="mine"){U.tape="mine";render();$("#tape").scrollIntoView({block:"start"});return;}
+    return render();}
+  if(b.dataset.cancel){const o=S.orders.find(x=>x.hash===b.dataset.cancel);nUse(o.maker,o.nonce);o.status="cancelled";return render();}
+  if(b.dataset.cross!==undefined){const c=crossing(); if(!c)return; const r=match(c[0],c[1],ME.address,S.fee,false);
+    U.msg=r.ok?["","match eseguito tra due maker · surplus a loro"]:["e","revert: "+r.err]; if(r.ok){U.flash=true;U.tape="fills";} return render();}
+  if(b.id==="wbtn"||b.dataset.connect!==undefined)return openSheet();
+  if(b.dataset.w){const v=b.dataset.w; if(v==="close")return closeSheet(); if(v==="off")return disconnect(); if(v==="demo")return connectDemo(); return connectInjected(providers()[+v.slice(1)]);}
+  if(b.dataset.cross!==undefined&&!ME)return openSheet();
+  if(b.id==="go"&&!b.disabled)return execute();
+  if(b.id==="reset"){reset();await seed();return render();}
+  if(b.id==="sheet")return closeSheet();
+  if(b.id==="theme"){const r=document.documentElement;r.dataset.theme=r.dataset.theme==="light"?"dark":"light";try{localStorage.setItem("pswp-th",r.dataset.theme);}catch{}}
+});
+document.addEventListener("input",e=>{const id=e.target.id;
+  if(id==="flt"){U.f=e.target.value;const p=e.target.selectionStart;renderBook();const el=$("#flt");el.focus();try{el.setSelectionRange(p,p);}catch{}return;}
+  if(id==="sa"||id==="ba"){U[id]=e.target.value;U.msg=null;U.run=null;const p=e.target.selectionStart;renderTicket();const el=$("#"+id);el.focus();try{el.setSelectionRange(p,p);}catch{}}});
+document.addEventListener("change",e=>{if(e.target.id==="sell"||e.target.id==="buy"){U[e.target.id]=e.target.value;U.msg=null;renderTicket();}});
+document.addEventListener("keydown",e=>{
+  if(e.target.matches("tr.lv")&&e.key==="Enter"){e.target.click();return;}
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT"){if(e.key==="Enter"&&e.target.id!=="flt")$("#go")?.click(); if(e.key==="Escape")e.target.blur(); return;}
+  if(e.key==="/"){e.preventDefault();$("#flt")?.focus();}
+  else if(e.key==="n"||e.key==="N"){document.querySelector('[data-view="new"]').click();}
+  else if(e.key==="Enter"){$("#go")?.click();}
+  else if(e.key==="Escape"){if(!$("#sheet").classList.contains("hide"))return closeSheet();reset();render();}
+  else if(["F1","F2","F3"].includes(e.key)){e.preventDefault();document.querySelector(`[data-view="${["book","new","mine"][+e.key[1]-1]}"]`).click();}
+});
+try{const th=localStorage.getItem("pswp-th");if(th)document.documentElement.dataset.theme=th;}catch{}
+seed().then(render);
+setInterval(()=>{if(!U.busy&&document.activeElement?.id!=="flt")renderBook();},20000);
+})();
+</script>
+</body>
+</html>
