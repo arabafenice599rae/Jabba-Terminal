@@ -2,3 +2,6 @@ out/
 cache/
 broadcast/
 .env
+.certora_internal/
+emv-*/
+certora/mutants/out/
