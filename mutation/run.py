@@ -100,7 +100,7 @@ def run_halmos(ws):
 def run_certora(ws, tag):
     for d in glob.glob(str(ws / "emv-*")) + [str(ws / ".certora_internal")]:
         shutil.rmtree(d, ignore_errors=True)
-    rc, out = sh(f"certora/run.sh --msg {tag}", ws, 2400)
+    rc, out = sh(f"certora/run.sh --msg {tag}", ws, 900)
     reports = glob.glob(str(ws / "emv-*/Reports/output.json"))
     if not reports:
         return None, out
