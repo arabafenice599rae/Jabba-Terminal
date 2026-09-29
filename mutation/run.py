@@ -9,7 +9,7 @@ Uso:
   mutation/run.py --targeted                     # solo mutazioni mirate
   mutation/run.py --gambit                       # genera ed esegue i mutanti Gambit
   mutation/run.py --targeted --gambit --jobs 2   # tutto, due mutanti in parallelo
-Opzioni: --no-certora / --no-halmos, --only T1,T5,g12, --out mutation/results.json
+Opzioni: --no-certora / --no-halmos, --only T1,T5,g12, --out mutation/results.json, --resume
 
 Requisiti: forge, halmos, gambit, CERTORA (build locale del Prover), solc-0.8.36 nel PATH.
 """
@@ -165,6 +165,7 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--jobs", type=int, default=1)
     ap.add_argument("--out", default=str(ROOT / "mutation/results.json"))
+    ap.add_argument("--resume", action="store_true", help="salta i mutanti già presenti in --out")
     a = ap.parse_args()
 
     base = tempfile.mkdtemp(prefix="jabba-mutation-")
@@ -172,9 +173,13 @@ def main():
     if a.only:
         keep = set(a.only.split(","))
         mutants = [m for m in mutants if m["id"] in keep]
-    print(f"{len(mutants)} mutanti", flush=True)
-
     results = []
+    if a.resume and Path(a.out).exists():
+        results = json.loads(Path(a.out).read_text())
+        done = {r["id"] for r in results}
+        mutants = [m for m in mutants if m["id"] not in done]
+    print(f"{len(mutants)} mutanti da eseguire ({len(results)} già fatti)", flush=True)
+
     with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
         futs = {ex.submit(evaluate, m, base, not a.no_halmos, not a.no_certora): m for m in mutants}
         for f in cf.as_completed(futs):

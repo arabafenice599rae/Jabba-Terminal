@@ -1,0 +1,552 @@
+[
+  {
+    "id": "T1",
+    "kind": "mirato",
+    "target": "I7",
+    "description": "Destinatario invertito: la gamba di A torna ad A",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "FAIL"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "SANITY_FAIL",
+      "I2_exactGive": "SANITY_FAIL",
+      "I2_nonConformingReceipt": "SANITY_FAIL",
+      "I3_onceAndWhole": "SANITY_FAIL",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SANITY_FAIL",
+      "I4_onlySetFeeWritesFee": "FAIL",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SANITY_FAIL",
+      "I6_conservation": "SANITY_FAIL",
+      "I7_counterpartyRecipient": "SANITY_FAIL",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL"
+    },
+    "killed_by": [
+      "halmos:check_live_validMatchSucceeds",
+      "certora:I1_receipt",
+      "certora:I2_exactGive",
+      "certora:I2_nonConformingReceipt",
+      "certora:I3_onceAndWhole",
+      "certora:I4_noResidue",
+      "certora:I4_onlySetFeeWritesFee",
+      "certora:I5_feeForwarded",
+      "certora:I6_conservation",
+      "certora:I7_counterpartyRecipient",
+      "certora:live_matchPossible"
+    ],
+    "status": "ucciso",
+    "seconds": 274
+  },
+  {
+    "id": "T1b",
+    "kind": "mirato",
+    "target": "I7",
+    "description": "Destinatario scelto dal submitter, senza verifica di ricezione (difetto doppio)",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "FAIL",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "FAIL",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "FAIL",
+      "check_I7_counterpartyRecipient": "FAIL",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "FAIL",
+      "I1_receipt#msg": [
+        "B non riceve esattamente a.sellAmount"
+      ],
+      "I2_exactGive": "FAIL",
+      "I2_exactGive#msg": [
+        "a0 - TokenX.balanceOf(a.maker) == to_mat..."
+      ],
+      "I2_nonConformingReceipt": "FAIL",
+      "I2_nonConformingReceipt#msg": [
+        "FeeOnTransferToken.balanceOf(b.maker) - ..."
+      ],
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "FAIL",
+      "I6_conservation#msg": [
+        "TokenX.balanceOf(a.maker) + TokenX.balan..."
+      ],
+      "I7_counterpartyRecipient": "FAIL",
+      "I7_counterpartyRecipient#msg": [
+        "destinatario diverso dalla controparte"
+      ],
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I1_receipt",
+      "halmos:check_I2_nonConformingReceipt",
+      "halmos:check_I6_conservation",
+      "halmos:check_I7_counterpartyRecipient",
+      "certora:I1_receipt",
+      "certora:I2_exactGive",
+      "certora:I2_nonConformingReceipt",
+      "certora:I6_conservation",
+      "certora:I7_counterpartyRecipient"
+    ],
+    "status": "ucciso",
+    "seconds": 247
+  },
+  {
+    "id": "T2",
+    "kind": "mirato",
+    "target": "I1",
+    "description": "Controllo di incrocio rimosso per il lato di A (bSellAmt >= a.buyAmount)",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "FAIL",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "FAIL",
+      "I1_receipt#msg": [
+        "A riceve meno del proprio buyAmount"
+      ],
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I1_receipt",
+      "certora:I1_receipt"
+    ],
+    "status": "ucciso",
+    "seconds": 277
+  },
+  {
+    "id": "T3",
+    "kind": "mirato",
+    "target": "I5",
+    "description": "Controllo fee indebolito: msg.value >= fee invece di ==",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "FAIL",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "FAIL",
+      "I5_feeForwarded#msg": [
+        "msg.value diverso dalla fee"
+      ],
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I5_feeForwarded",
+      "certora:I5_feeForwarded"
+    ],
+    "status": "ucciso",
+    "seconds": 283
+  },
+  {
+    "id": "T4",
+    "kind": "mirato",
+    "target": "H",
+    "description": "orderHash senza il maker",
+    "halmos": {
+      "check_H_orderHash": "FAIL",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "FAIL",
+      "H_orderHash#msg": [
+        "Jabba.orderHash(e, s) == expected"
+      ],
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_H_orderHash",
+      "certora:H_orderHash"
+    ],
+    "status": "ucciso",
+    "seconds": 267
+  },
+  {
+    "id": "T5",
+    "kind": "mirato",
+    "target": "I2",
+    "description": "Verifica dei delta di ricezione rimossa",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "FAIL",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "FAIL",
+      "I2_nonConformingReceipt#msg": [
+        "FeeOnTransferToken.balanceOf(b.maker) - ..."
+      ],
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I2_nonConformingReceipt",
+      "certora:I2_nonConformingReceipt"
+    ],
+    "status": "ucciso",
+    "seconds": 235
+  },
+  {
+    "id": "T6",
+    "kind": "mirato",
+    "target": "I8",
+    "description": "post scrive nello storage (fee = nonce)",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "FAIL",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "FAIL",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "FAIL",
+      "I8_postNoEffects#msg": [
+        "post scrive lo storage di Jabba"
+      ],
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I8_postNoEffects",
+      "certora:I4_onlySetFeeWritesFee",
+      "certora:I8_postNoEffects"
+    ],
+    "status": "ucciso",
+    "seconds": 272
+  },
+  {
+    "id": "T7",
+    "kind": "mirato",
+    "target": "I5",
+    "description": "Fee rimborsata al submitter invece che inviata a TREASURY",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "FAIL",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "FAIL",
+      "I5_feeForwarded#msg": [
+        "fee non inoltrata per intero"
+      ],
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I5_feeForwarded",
+      "certora:I5_feeForwarded"
+    ],
+    "status": "ucciso",
+    "seconds": 269
+  },
+  {
+    "id": "T8",
+    "kind": "mirato",
+    "target": "I7",
+    "description": "Witness con campi invertiti (buyAmount, buyToken)",
+    "halmos": {
+      "check_H_orderHash": "FAIL",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "FAIL",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "FAIL",
+      "H_orderHash#msg": [
+        "Jabba.orderHash(e, s) == expected"
+      ],
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "FAIL",
+      "I7_counterpartyRecipient#msg": [
+        "witness di A alterato"
+      ],
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_H_orderHash",
+      "halmos:check_I7_counterpartyRecipient",
+      "certora:H_orderHash",
+      "certora:I7_counterpartyRecipient"
+    ],
+    "status": "ucciso",
+    "seconds": 253
+  },
+  {
+    "id": "T9",
+    "kind": "mirato",
+    "target": "I4",
+    "description": "Gamba di A verso il contratto stesso, senza verifica di ricezione (difetto doppio)",
+    "halmos": {
+      "check_H_orderHash": "PASS",
+      "check_I1_receipt": "FAIL",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "FAIL",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "FAIL",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "FAIL",
+      "check_I7_counterpartyRecipient": "FAIL",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    },
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_receipt": "FAIL",
+      "I1_receipt#msg": [
+        "B non riceve esattamente a.sellAmount"
+      ],
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "FAIL",
+      "I2_nonConformingReceipt#msg": [
+        "FeeOnTransferToken.balanceOf(b.maker) - ..."
+      ],
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "FAIL",
+      "I4_noResidue#msg": [
+        "TokenX.balanceOf(currentContract) == 0 &..."
+      ],
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "FAIL",
+      "I6_conservation#msg": [
+        "TokenX.balanceOf(a.maker) + TokenX.balan..."
+      ],
+      "I7_counterpartyRecipient": "FAIL",
+      "I7_counterpartyRecipient#msg": [
+        "destinatario diverso dalla controparte"
+      ],
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
+    },
+    "killed_by": [
+      "halmos:check_I1_receipt",
+      "halmos:check_I2_nonConformingReceipt",
+      "halmos:check_I4_noResidue",
+      "halmos:check_I6_conservation",
+      "halmos:check_I7_counterpartyRecipient",
+      "certora:I1_receipt",
+      "certora:I2_nonConformingReceipt",
+      "certora:I4_noResidue",
+      "certora:I6_conservation",
+      "certora:I7_counterpartyRecipient"
+    ],
+    "status": "ucciso",
+    "seconds": 216
+  },
+  {
+    "id": "g1",
+    "kind": "gambit",
+    "target": "",
+    "description": "IfStatementMutation: -        if (treasury == address(0)) revert ZeroAddress(); / +        /// IfStatementMutation(`treasury == address(0)` |==> `true`) of: `if (treasury == address(0)) revert ZeroAddress();` / +        if (true) revert ZeroAddress();",
+    "halmos": {},
+    "certora": null,
+    "certora_error": "WARNING: Note: attribute msg value in CLI (g1) overrides value stored in conf file (Jabba v2.4 I1-I8)\nWARNING: Build cache is used with a local certora-cli script version. Beware of false hits and unexpected behaviors!\nCompiling certora/harness/HashOracle.sol...\nCompiling certora/harness/HashOracle.sol to expose internal function information and local variables...\nCompiling certora/harness/Tokens.sol...\nCompiling certora/harness/Tokens.sol to expose internal function information and local variables...\nCompiling src/Jabba.sol...\n\nsolc-0.8.36 had an error:\nCodeGenerationError: Some immutables were read from but never assigned, possibly\nbecause of optimization.\n  --> /tmp/jabba-mutation-lk7go79a/jabba-mut-gy_sa2i0/src/Jabba.sol:40:1:\n   |\n40 | contract Jabba {\n   | ^ (Relevant source part starts here and spans across multiple lines).\n\n\n\n",
+    "killed_by": [],
+    "status": "sopravvissuto",
+    "seconds": 9
+  }
+]
