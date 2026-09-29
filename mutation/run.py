@@ -112,7 +112,9 @@ def run_certora(ws, tag):
     for rule, v in json.loads(Path(reports[0]).read_text())["rules"].items():
         if rule == "envfreeFuncsStaticCheck":
             continue
-        status = v if isinstance(v, str) else ("SUCCESS" if set(v) == {"SUCCESS"} else "FAIL")
+        statuses = {v} if isinstance(v, str) else set(v)
+        # SANITY_FAIL: la regola è vacua (nessun percorso raggiunge le asserzioni senza revert).
+        status = "SUCCESS" if statuses == {"SUCCESS"} else ("FAIL" if "FAIL" in statuses else "VACUOUS")
         if status != "SUCCESS":
             if re.search(r"vacu|sanity", " ".join(reasons.get(rule, [])), re.I):
                 status = "VACUOUS"
@@ -143,13 +145,18 @@ def evaluate(m, base, do_halmos, do_certora):
             if r["certora"] is None:
                 r["certora_error"] = log[-2000:]
         killers = [f"halmos:{k}" for k, v in (r.get("halmos") or {}).items() if v != "PASS"]
+        if do_halmos and not r["halmos"]:
+            killers.append("halmos:setUp")  # nessun check eseguito: il deploy di setUp fallisce
         killers += [
             f"certora:{k}" + ("(vacua)" if v == "VACUOUS" else "")
             for k, v in (r.get("certora") or {}).items()
             if "#" not in k and v != "SUCCESS"
         ]
         r["killed_by"] = killers
-        r["status"] = "ucciso" if killers else "sopravvissuto"
+        if do_certora and not r.get("certora") and not killers:
+            r["status"] = "errore"  # Certora senza risultati: da rieseguire
+        else:
+            r["status"] = "ucciso" if killers else "sopravvissuto"
         r["seconds"] = round(time.time() - t0)
         return r
     finally:

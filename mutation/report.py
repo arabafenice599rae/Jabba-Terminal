@@ -11,6 +11,8 @@ PROPS = ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "H"]
 
 def prop_of(name):
     """check_I1_receipt / I1_receipt -> I1; check_live_* / live_* -> live."""
+    if name == "setUp":
+        return "setUp"
     m = re.match(r"(?:check_)?(I\d|H|live)_", name)
     return m.group(1) if m else "?"
 
@@ -30,7 +32,7 @@ def killers(r, tool):
 
 
 def fmt(props):
-    order = PROPS + ["live"]
+    order = PROPS + ["live", "setUp", "?"]
     return ", ".join(sorted(props, key=order.index)) if props else "—"
 
 
@@ -61,12 +63,12 @@ def main(path=ROOT / "mutation/results.json"):
     # Riepilogo Gambit
     g = [r for r in res if r["kind"] == "gambit"]
     if g:
-        by = {s: sum(1 for r in g if r["status"] == s) for s in ("ucciso", "sopravvissuto", "non compilabile")}
+        by = {s: sum(1 for r in g if r["status"] == s) for s in ("ucciso", "sopravvissuto", "non compilabile", "errore")}
         h_only = sum(1 for r in g if killers(r, "halmos")[0] and not (killers(r, "certora")[0] | killers(r, "certora")[1]))
         c_only = sum(1 for r in g if (killers(r, "certora")[0] | killers(r, "certora")[1]) and not killers(r, "halmos")[0])
         lines += [
             f"Gambit: {len(g)} mutanti — {by['ucciso']} uccisi, {by['sopravvissuto']} sopravvissuti, "
-            f"{by['non compilabile']} non compilabili. Rilevati solo da Halmos: {h_only}; solo da Certora: {c_only}.",
+            f"{by['non compilabile']} non compilabili, {by['errore']} in errore. Rilevati solo da Halmos: {h_only}; solo da Certora: {c_only}.",
             "",
             "| Id | Mutazione | Halmos | Certora | Esito |",
             "|---|---|---|---|---|",
