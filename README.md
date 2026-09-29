@@ -26,13 +26,14 @@ web/index.html              terminale (demo con chain simulata)
 Richiede [Foundry](https://getfoundry.sh).
 
 ```sh
-git init
-forge install foundry-rs/forge-std Uniswap/permit2
+git clone --recurse-submodules https://github.com/arabafenice599rae/Jabba-Terminal
+cd Jabba-Terminal
 forge build
 forge test
 ```
 
-`forge install` crea `lib/forge-std` e `lib/permit2` come submodule; le remapping sono in `foundry.toml`.
+`lib/forge-std` e `lib/permit2` sono submodule; se il repo è già clonato senza, `git submodule update --init --recursive`.
+Le remapping sono in `foundry.toml`.
 
 ## Contratto
 
