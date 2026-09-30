@@ -3,7 +3,7 @@
  *
  * Modello: Permit2 è sostituito da test/formal/Permit2Model.sol all'indirizzo canonico
  * (nonce monouso, scadenza, importo, trasferimento; registra destinatario, spender e witness).
- * TokenX / TokenY sono ERC-20 conformi, FeeOnTransferToken è il caso non conforme.
+ * TokenX / TokenY / TokenZ sono ERC-20 conformi, FeeOnTransferToken è il caso non conforme.
  * La chiamata di basso livello verso TREASURY è modellata senza effetti collaterali
  * (il lock di rientro è coperto dai test Foundry).
  */
@@ -11,6 +11,7 @@
 using Permit2Model as p2;
 using TokenX as tokX;
 using TokenY as tokY;
+using TokenZ as tokZ;
 using FeeOnTransferToken as fot;
 using HashOracle as oracle;
 
@@ -29,6 +30,7 @@ methods {
 
     function tokX.balanceOf(address) external returns (uint256) envfree;
     function tokY.balanceOf(address) external returns (uint256) envfree;
+    function tokZ.balanceOf(address) external returns (uint256) envfree;
     function fot.balanceOf(address) external returns (uint256) envfree;
 
     function oracle.orderHash(address, address, uint256, uint256, uint256, address, uint256, address, bytes32)
@@ -45,7 +47,7 @@ methods {
 // ------------------------------------------------------------------ definizioni
 
 definition isSystem(address u) returns bool =
-    u == currentContract || u == p2 || u == tokX || u == tokY || u == fot || u == oracle;
+    u == currentContract || u == p2 || u == tokX || u == tokY || u == tokZ || u == fot || u == oracle;
 
 /// A vende X e compra Y, B vende Y e compra X; maker esterni al sistema.
 function setupXY(env e, Jabba.Side a, Jabba.Side b) {
@@ -111,6 +113,54 @@ rule I2_nonConformingReceipt(env e, Jabba.Side a, Jabba.Side b) {
 
     assert fot.balanceOf(b.maker) - b0 >= to_mathint(a.permit.permitted.amount);
     assert tokY.balanceOf(a.maker) - a0 >= to_mathint(b.permit.permitted.amount);
+}
+
+// ------------------------------------------------------------------ I1/I2 generali
+
+function isToken(address t) returns bool {
+    return t == tokX || t == tokY || t == tokZ;
+}
+
+function balOf(address t, address u) returns mathint {
+    if (t == tokX) {
+        return tokX.balanceOf(u);
+    } else if (t == tokY) {
+        return tokY.balanceOf(u);
+    }
+    return tokZ.balanceOf(u);
+}
+
+/// I1 senza abbinamento prefissato: i quattro token sono scelti fra tre e i maker possono
+/// coincidere. Rileva la rimozione di SelfMatch, SameToken e TokenMismatch.
+rule I1_general(env e, Jabba.Side a, Jabba.Side b) {
+    require isToken(a.permit.permitted.token) && isToken(a.order.buyToken);
+    require isToken(b.permit.permitted.token) && isToken(b.order.buyToken);
+    require !isSystem(a.maker) && !isSystem(b.maker) && !isSystem(e.msg.sender);
+    require TREASURY() != currentContract && !isSystem(TREASURY());
+    mathint a0 = balOf(a.order.buyToken, a.maker);
+    mathint b0 = balOf(b.order.buyToken, b.maker);
+
+    matchOrders(e, a, b);
+
+    mathint aGot = balOf(a.order.buyToken, a.maker) - a0;
+    mathint bGot = balOf(b.order.buyToken, b.maker) - b0;
+    assert aGot == to_mathint(b.permit.permitted.amount) && aGot >= to_mathint(a.order.buyAmount);
+    assert bGot == to_mathint(a.permit.permitted.amount) && bGot >= to_mathint(b.order.buyAmount);
+}
+
+/// I2 (non conformi), token fee-on-transfer venduto da B: A riceve comunque almeno quanto B cede.
+rule I2_nonConformingReceiptA(env e, Jabba.Side a, Jabba.Side b) {
+    require a.permit.permitted.token == tokX && a.order.buyToken == fot;
+    require b.permit.permitted.token == fot && b.order.buyToken == tokX;
+    require !isSystem(a.maker) && !isSystem(b.maker) && !isSystem(e.msg.sender);
+    require TREASURY() != currentContract && !isSystem(TREASURY());
+    mathint a0 = fot.balanceOf(a.maker);
+    mathint b0 = tokX.balanceOf(b.maker);
+
+    matchOrders(e, a, b);
+
+    assert fot.balanceOf(a.maker) - a0 >= to_mathint(b.permit.permitted.amount);
+    assert tokX.balanceOf(b.maker) - b0 >= to_mathint(a.permit.permitted.amount);
 }
 
 // ------------------------------------------------------------------ I3

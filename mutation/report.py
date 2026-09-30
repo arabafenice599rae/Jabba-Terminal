@@ -6,14 +6,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PROPS = ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "H"]
+PROPS = ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "H", "C"]
 
 
 def prop_of(name):
     """check_I1_receipt / I1_receipt -> I1; check_live_* / live_* -> live."""
     if name == "setUp":
         return "setUp"
-    m = re.match(r"(?:check_)?(I\d|H|live)_", name)
+    m = re.match(r"(?:check_)?(I\d|H|C|live)_", name)
     return m.group(1) if m else "?"
 
 

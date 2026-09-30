@@ -26,6 +26,7 @@ contract JabbaHalmos is Test {
     Jabba swap;
     MockERC20 x;
     MockERC20 y;
+    MockERC20 z;
     FeeOnTransferToken fot;
     Permit2Model p2 = Permit2Model(P2);
     address payable treasury = payable(address(0x7EA5));
@@ -37,6 +38,7 @@ contract JabbaHalmos is Test {
         swap = new Jabba(treasury, FEE);
         x = new MockERC20("X", "X", 18);
         y = new MockERC20("Y", "Y", 6);
+        z = new MockERC20("Z", "Z", 18);
         fot = new FeeOnTransferToken();
         _approveAll(alice);
         _approveAll(bob);
@@ -48,6 +50,7 @@ contract JabbaHalmos is Test {
         vm.startPrank(who);
         x.approve(P2, type(uint256).max);
         y.approve(P2, type(uint256).max);
+        z.approve(P2, type(uint256).max);
         fot.approve(P2, type(uint256).max);
         vm.stopPrank();
     }
@@ -318,5 +321,89 @@ contract JabbaHalmos is Test {
         );
         assert(swap.permitWitnessStructHash(s) == structHash);
         assert(swap.orderHash(s) == keccak256(abi.encode(maker, structHash)));
+    }
+
+    // ------------------------------------------------------------------ I1/I2 generali
+
+    function _tok(uint8 i) internal view returns (MockERC20) {
+        i %= 3;
+        return i == 0 ? x : (i == 1 ? y : z);
+    }
+
+    /// @notice I1 senza abbinamento prefissato: i quattro token sono scelti fra tre e il maker di B
+    ///         può coincidere con A. Se il match riesce, ogni maker riceve nel proprio buyToken
+    ///         esattamente il sellAmount della controparte e almeno il proprio buyAmount.
+    ///         Rileva la rimozione di SelfMatch, SameToken e TokenMismatch.
+    function check_I1_general(
+        uint8 ta,
+        uint8 tb,
+        uint8 tc,
+        uint8 td,
+        bool sameMaker,
+        uint96 aSell,
+        uint96 bSell,
+        uint96 aBuy,
+        uint96 bBuy
+    ) public {
+        address bm = sameMaker ? alice : bob;
+        MockERC20 aBuyTok = _tok(tb);
+        MockERC20 bBuyTok = _tok(td);
+        for (uint8 i = 0; i < 3; i++) {
+            _tok(i).mint(alice, type(uint96).max);
+            _tok(i).mint(bob, type(uint96).max);
+        }
+        Jabba.Side memory a = _side(alice, address(_tok(ta)), aSell, address(aBuyTok), aBuy, 1);
+        Jabba.Side memory b = _side(bm, address(_tok(tc)), bSell, address(bBuyTok), bBuy, 2);
+        uint256 a0 = aBuyTok.balanceOf(alice);
+        uint256 b0 = bBuyTok.balanceOf(bm);
+        if (_match(address(0x5B), FEE, a, b)) {
+            assert(aBuyTok.balanceOf(alice) == a0 + bSell);
+            assert(aBuyTok.balanceOf(alice) >= a0 + aBuy);
+            assert(bBuyTok.balanceOf(bm) == b0 + aSell);
+            assert(bBuyTok.balanceOf(bm) >= b0 + bBuy);
+        }
+    }
+
+    /// @notice I2 (non conformi), token fee-on-transfer venduto da B: A riceve comunque almeno
+    ///         quanto B ha ceduto. Complementare a check_I2_nonConformingReceipt (fot venduto da A).
+    function check_I2_nonConformingReceiptA(uint128 aSell, uint128 bSell, uint128 aBuy, uint128 bBuy, uint128 balB)
+        public
+    {
+        x.mint(alice, aSell);
+        fot.mint(bob, balB);
+        Jabba.Side memory a = _side(alice, address(x), aSell, address(fot), aBuy, 1);
+        Jabba.Side memory b = _side(bob, address(fot), bSell, address(x), bBuy, 1);
+        uint256 a0 = fot.balanceOf(alice);
+        uint256 b0 = x.balanceOf(bob);
+        if (_match(address(0x5B), FEE, a, b)) {
+            assert(fot.balanceOf(alice) - a0 >= bSell);
+            assert(x.balanceOf(bob) - b0 >= aSell);
+        }
+    }
+
+    // ------------------------------------------------------------------ costruttore (§6)
+
+    /// @notice TREASURY non può essere zero; con TREASURY valido il deploy riesce con la fee data.
+    function check_C_constructor(address t, uint256 f) public {
+        try new Jabba(payable(t), f) returns (Jabba j) {
+            assert(t != address(0));
+            assert(j.TREASURY() == t && j.fee() == f);
+        } catch {
+            assert(t == address(0));
+        }
+    }
+
+    /// @notice Due match indipendenti nella stessa transazione (es. da un router) riescono entrambi:
+    ///         il lock di rientro va rilasciato alla fine di ogni match.
+    function check_live_twoMatchesSameTx(uint128 amt) public {
+        vm.assume(amt > 0);
+        x.mint(alice, 2 * uint256(amt));
+        y.mint(bob, 2 * uint256(amt));
+        Jabba.Side memory a1 = _side(alice, address(x), amt, address(y), amt, 1);
+        Jabba.Side memory b1 = _side(bob, address(y), amt, address(x), amt, 1);
+        Jabba.Side memory a2 = _side(alice, address(x), amt, address(y), amt, 2);
+        Jabba.Side memory b2 = _side(bob, address(y), amt, address(x), amt, 2);
+        assert(_match(address(0x5B), FEE, a1, b1));
+        assert(_match(address(0x5B), FEE, a2, b2));
     }
 }
