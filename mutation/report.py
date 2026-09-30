@@ -17,6 +17,21 @@ def prop_of(name):
     return m.group(1) if m else "?"
 
 
+# Copertura per strumento: ✅ proprietà verificata; "parz." verificata in parte (vedi docs/FORMAL.md).
+COVERAGE = {"H": ("✅", "parz."), "C": ("✅", "—"), "live": ("✅", "✅")}
+
+GAMBIT_RE = re.compile(r"(\w+)Mutation\(`(.*?)` \|==> `(.*?)`\) of: `(.*?)`")
+
+
+def short_desc(r):
+    """Descrizione compatta di un mutante Gambit: tipo, istruzione, sostituzione."""
+    m = GAMBIT_RE.search(r["description"])
+    kind = r["description"].split(":")[0].replace("Mutation", "")
+    if not m:
+        return r["description"]
+    return f"{kind}: `{m.group(4)}` — `{m.group(2)}` → `{m.group(3)}`"
+
+
 def killers(r, tool):
     """Proprietà che rilevano il mutante con un'asserzione violata (le regole vacue sono a parte)."""
     out, vacuous = set(), set()
@@ -43,10 +58,11 @@ def main(path=ROOT / "mutation/results.json"):
 
     # Matrice per proprietà
     lines += ["| Proprietà | Halmos | Certora | Mutanti rilevati (mirati) | Mutanti Gambit rilevati |", "|---|---|---|---|---|"]
-    for p in PROPS:
+    for p in PROPS + ["live"]:
         tg = [r["id"] for r in res if r["kind"] == "mirato" and (p in killers(r, "halmos")[0] | killers(r, "certora")[0])]
         gb = [r["id"] for r in res if r["kind"] == "gambit" and (p in killers(r, "halmos")[0] | killers(r, "certora")[0])]
-        lines.append(f"| {p} | ✅ | ✅ | {', '.join(tg) or '—'} | {len(gb)} |")
+        hal, cer = COVERAGE.get(p, ("✅", "✅"))
+        lines.append(f"| {p} | {hal} | {cer} | {', '.join(tg) or '—'} | {len(gb)} |")
     lines.append("")
 
     # Mutanti mirati
@@ -64,8 +80,9 @@ def main(path=ROOT / "mutation/results.json"):
     g = [r for r in res if r["kind"] == "gambit"]
     if g:
         by = {s: sum(1 for r in g if r["status"] == s) for s in ("ucciso", "sopravvissuto", "non compilabile", "errore")}
-        h_only = sum(1 for r in g if killers(r, "halmos")[0] and not (killers(r, "certora")[0] | killers(r, "certora")[1]))
-        c_only = sum(1 for r in g if (killers(r, "certora")[0] | killers(r, "certora")[1]) and not killers(r, "halmos")[0])
+        # Solo violazioni reali: una regola Certora diventata vacua non conta come rilevazione.
+        h_only = sum(1 for r in g if killers(r, "halmos")[0] and not killers(r, "certora")[0])
+        c_only = sum(1 for r in g if killers(r, "certora")[0] and not killers(r, "halmos")[0])
         lines += [
             f"Gambit: {len(g)} mutanti — {by['ucciso']} uccisi, {by['sopravvissuto']} sopravvissuti, "
             f"{by['non compilabile']} non compilabili, {by['errore']} in errore. Rilevati solo da Halmos: {h_only}; solo da Certora: {c_only}.",
@@ -77,8 +94,8 @@ def main(path=ROOT / "mutation/results.json"):
             h, _ = killers(r, "halmos")
             c, cv = killers(r, "certora")
             cert = fmt(c) + (f" (vacue: {fmt(cv)})" if cv else "")
-            desc = r["description"].replace("|", "\\|")
-            lines.append(f"| {r['id']} | `{desc}` | {fmt(h)} | {cert} | {r['status']} |")
+            desc = short_desc(r).replace("|", "\\|")
+            lines.append(f"| {r['id']} | {desc} | {fmt(h)} | {cert} | {r['status']} |")
     print("\n".join(lines))
 
 

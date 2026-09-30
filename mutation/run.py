@@ -181,6 +181,9 @@ def main():
     ap.add_argument("--jobs", type=int, default=1)
     ap.add_argument("--out", default=str(ROOT / "mutation/results.json"))
     ap.add_argument("--resume", action="store_true", help="salta i mutanti già presenti in --out")
+    ap.add_argument("--update", action="store_true",
+                    help="rivaluta i mutanti di --only e aggiorna i record in --out, conservando i risultati "
+                         "dello strumento escluso (--no-halmos / --no-certora)")
     a = ap.parse_args()
 
     base = tempfile.mkdtemp(prefix="jabba-mutation-")
@@ -189,6 +192,11 @@ def main():
         keep = set(a.only.split(","))
         mutants = [m for m in mutants if m["id"] in keep]
     results = []
+    previous = {}
+    if a.update and Path(a.out).exists():
+        results = json.loads(Path(a.out).read_text())
+        # I record restano nel file finché il nuovo risultato non li sostituisce (run interrotti).
+        previous = {r["id"]: r for r in results}
     if a.resume and Path(a.out).exists():
         results = json.loads(Path(a.out).read_text())
         done = {r["id"] for r in results}
@@ -199,7 +207,17 @@ def main():
         futs = {ex.submit(evaluate, m, base, not a.no_halmos, not a.no_certora): m for m in mutants}
         for f in cf.as_completed(futs):
             r = f.result()
-            results.append(r)
+            old = previous.get(r["id"])
+            if old:
+                # Conserva i risultati dello strumento non rieseguito e ricalcola l'esito.
+                for tool, skip in (("halmos", a.no_halmos), ("certora", a.no_certora)):
+                    if skip and tool in old:
+                        r[tool] = old[tool]
+                        r["killed_by"] = [k for k in r.get("killed_by", []) if not k.startswith(tool + ":")]
+                        r["killed_by"] += [k for k in old.get("killed_by", []) if k.startswith(tool + ":")]
+                if r.get("status") in ("ucciso", "sopravvissuto"):
+                    r["status"] = "ucciso" if r["killed_by"] else "sopravvissuto"
+            results = [x for x in results if x["id"] != r["id"]] + [r]
             print(f"{r['id']:>5} {r['status']:<16} {', '.join(r.get('killed_by', []))}", flush=True)
             Path(a.out).write_text(json.dumps(sorted(results, key=lambda r: r["id"]), indent=2, ensure_ascii=False))
     shutil.rmtree(base, ignore_errors=True)

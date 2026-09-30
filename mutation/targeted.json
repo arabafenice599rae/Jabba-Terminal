@@ -3,71 +3,149 @@
     "id": "T1",
     "target": "I7",
     "description": "Destinatario invertito: la gamba di A torna ad A",
-    "edits": [["_pull(a, b.maker);", "_pull(a, a.maker);"]]
+    "edits": [
+      [
+        "_pull(a, b.maker);",
+        "_pull(a, a.maker);"
+      ]
+    ]
   },
   {
     "id": "T1b",
     "target": "I7",
     "description": "Destinatario scelto dal submitter, senza verifica di ricezione (difetto doppio)",
     "edits": [
-      ["_pull(a, b.maker);", "_pull(a, msg.sender);"],
-      ["if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();", ""],
-      ["if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();", ""]
+      [
+        "_pull(a, b.maker);",
+        "_pull(a, msg.sender);"
+      ],
+      [
+        "if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();",
+        ""
+      ],
+      [
+        "if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();",
+        ""
+      ]
     ]
   },
   {
     "id": "T2",
     "target": "I1",
     "description": "Controllo di incrocio rimosso per il lato di A (bSellAmt >= a.buyAmount)",
-    "edits": [["if (aSellAmt < b.order.buyAmount || bSellAmt < a.order.buyAmount) revert NotCrossed();", "if (aSellAmt < b.order.buyAmount) revert NotCrossed();"]]
+    "edits": [
+      [
+        "if (aSellAmt < b.order.buyAmount || bSellAmt < a.order.buyAmount) revert NotCrossed();",
+        "if (aSellAmt < b.order.buyAmount) revert NotCrossed();"
+      ]
+    ]
   },
   {
     "id": "T3",
     "target": "I5",
     "description": "Controllo fee indebolito: msg.value >= fee invece di ==",
-    "edits": [["if (msg.value != fee) revert WrongFee();", "if (msg.value < fee) revert WrongFee();"]]
+    "edits": [
+      [
+        "if (msg.value != fee) revert WrongFee();",
+        "if (msg.value < fee) revert WrongFee();"
+      ]
+    ]
   },
   {
     "id": "T4",
     "target": "H",
     "description": "orderHash senza il maker",
-    "edits": [["return keccak256(abi.encode(s.maker, permitWitnessStructHash(s)));", "return keccak256(abi.encode(permitWitnessStructHash(s)));"]]
+    "edits": [
+      [
+        "return keccak256(abi.encode(s.maker, permitWitnessStructHash(s)));",
+        "return keccak256(abi.encode(permitWitnessStructHash(s)));"
+      ]
+    ]
   },
   {
     "id": "T5",
     "target": "I2",
     "description": "Verifica dei delta di ricezione rimossa",
     "edits": [
-      ["if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();", ""],
-      ["if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();", ""]
+      [
+        "if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();",
+        ""
+      ],
+      [
+        "if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();",
+        ""
+      ]
     ]
   },
   {
     "id": "T6",
     "target": "I8",
     "description": "post scrive nello storage (fee = nonce)",
-    "edits": [["        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();\n        emit OrderPosted(", "        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();\n        fee = s.permit.nonce;\n        emit OrderPosted("]]
+    "edits": [
+      [
+        "        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();\n        emit OrderPosted(",
+        "        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();\n        fee = s.permit.nonce;\n        emit OrderPosted("
+      ]
+    ]
   },
   {
     "id": "T7",
     "target": "I5",
     "description": "Fee rimborsata al submitter invece che inviata a TREASURY",
-    "edits": [["(bool ok,) = TREASURY.call{value: msg.value}(\"\");", "(bool ok,) = payable(msg.sender).call{value: msg.value}(\"\");"]]
+    "edits": [
+      [
+        "(bool ok,) = TREASURY.call{value: msg.value}(\"\");",
+        "(bool ok,) = payable(msg.sender).call{value: msg.value}(\"\");"
+      ]
+    ]
   },
   {
     "id": "T8",
     "target": "I7",
     "description": "Witness con campi invertiti (buyAmount, buyToken)",
-    "edits": [["return keccak256(abi.encode(ORDER_TYPEHASH, o.buyToken, o.buyAmount));", "return keccak256(abi.encode(ORDER_TYPEHASH, o.buyAmount, o.buyToken));"]]
+    "edits": [
+      [
+        "return keccak256(abi.encode(ORDER_TYPEHASH, o.buyToken, o.buyAmount));",
+        "return keccak256(abi.encode(ORDER_TYPEHASH, o.buyAmount, o.buyToken));"
+      ]
+    ]
   },
   {
     "id": "T9",
     "target": "I4",
     "description": "Gamba di A verso il contratto stesso, senza verifica di ricezione (difetto doppio)",
     "edits": [
-      ["_pull(a, b.maker);", "_pull(a, address(this));"],
-      ["if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();", ""],
-      ["if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();", ""]
+      [
+        "_pull(a, b.maker);",
+        "_pull(a, address(this));"
+      ],
+      [
+        "if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();",
+        ""
+      ],
+      [
+        "if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();",
+        ""
+      ]
+    ]
+  },
+  {
+    "id": "T10",
+    "target": "I3",
+    "description": "Prelievo parziale (sellAmount − 1), senza verifica di ricezione (difetto doppio)",
+    "edits": [
+      [
+        "ISignatureTransfer.SignatureTransferDetails({to: to, requestedAmount: s.permit.permitted.amount})",
+        "ISignatureTransfer.SignatureTransferDetails({to: to, requestedAmount: s.permit.permitted.amount - 1})"
+      ],
+      [
+        "if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();",
+        ""
+      ],
+      [
+        "if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();",
+        ""
+      ]
     ]
   }
 ]

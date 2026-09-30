@@ -4,6 +4,46 @@
     "kind": "mirato",
     "target": "I7",
     "description": "Destinatario invertito: la gamba di A torna ad A",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 348,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -18,38 +58,87 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
+    }
+  },
+  {
+    "id": "T10",
+    "kind": "mirato",
+    "target": "I3",
+    "description": "Prelievo parziale (sellAmount − 1), senza verifica di ricezione (difetto doppio)",
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "FAIL",
+      "check_I1_receipt": "FAIL",
+      "check_I2_exactGive": "FAIL",
+      "check_I2_nonConformingReceipt": "FAIL",
+      "check_I2_nonConformingReceiptA": "FAIL",
+      "check_I3_onceAndWhole": "FAIL",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
     },
     "certora": {
       "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
+      "I1_general": "FAIL",
+      "I1_general#msg": [
+        "aGot == to_mathint(b.permit.permitted.am..."
+      ],
+      "I1_receipt": "FAIL",
+      "I1_receipt#msg": [
+        "A non riceve esattamente b.sellAmount"
+      ],
+      "I2_exactGive": "FAIL",
+      "I2_exactGive#msg": [
+        "a0 - TokenX.balanceOf(a.maker) == to_mat..."
+      ],
+      "I2_nonConformingReceipt": "FAIL",
+      "I2_nonConformingReceipt#msg": [
+        "FeeOnTransferToken.balanceOf(b.maker) - ..."
+      ],
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
+      "I3_onceAndWhole": "FAIL",
+      "I3_onceAndWhole#msg": [
+        "Permit2Model.lastRequested(a.maker) == a..."
+      ],
       "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
       "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
       "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ]
     },
     "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
+      "halmos:check_I1_general",
+      "halmos:check_I1_receipt",
+      "halmos:check_I2_exactGive",
+      "halmos:check_I2_nonConformingReceipt",
+      "halmos:check_I2_nonConformingReceiptA",
+      "halmos:check_I3_onceAndWhole",
+      "certora:I1_general",
+      "certora:I1_receipt",
+      "certora:I2_exactGive",
+      "certora:I2_nonConformingReceipt",
+      "certora:I2_nonConformingReceiptA",
+      "certora:I3_onceAndWhole"
     ],
     "status": "ucciso",
-    "seconds": 274
+    "seconds": 214
   },
   {
     "id": "T1b",
@@ -542,40 +631,28 @@
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (treasury == address(0)) revert ZeroAddress(); / +        /// IfStatementMutation(`treasury == address(0)` |==> `true`) of: `if (treasury == address(0)) revert ZeroAddress();` / +        if (true) revert ZeroAddress();",
-    "halmos": {},
     "certora": null,
-    "certora_error": "WARNING: Note: attribute msg value in CLI (g1) overrides value stored in conf file (Jabba v2.4 I1-I8)\nWARNING: Build cache is used with a local certora-cli script version. Beware of false hits and unexpected behaviors!\nCompiling certora/harness/HashOracle.sol...\nCompiling certora/harness/HashOracle.sol to expose internal function information and local variables...\nCompiling certora/harness/Tokens.sol...\nCompiling certora/harness/Tokens.sol to expose internal function information and local variables...\nCompiling src/Jabba.sol...\n\nsolc-0.8.36 had an error:\nCodeGenerationError: Some immutables were read from but never assigned, possibly\nbecause of optimization.\n  --> /tmp/jabba-mutation-nqrm2n4y/jabba-mut-pcqshxn9/src/Jabba.sol:40:1:\n   |\n40 | contract Jabba {\n   | ^ (Relevant source part starts here and spans across multiple lines).\n\n\n\n",
+    "certora_error": "WARNING: Note: attribute msg value in CLI (g1) overrides value stored in conf file (Jabba v2.4 I1-I8)\nWARNING: Build cache is used with a local certora-cli script version. Beware of false hits and unexpected behaviors!\nCompiling certora/harness/HashOracle.sol...\nCompiling certora/harness/HashOracle.sol to expose internal function information and local variables...\nCompiling certora/harness/Tokens.sol...\nCompiling certora/harness/Tokens.sol to expose internal function information and local variables...\nCompiling src/Jabba.sol...\n\nsolc-0.8.36 had an error:\nCodeGenerationError: Some immutables were read from but never assigned, possibly\nbecause of optimization.\n  --> /tmp/jabba-mutation-28vl5mha/jabba-mut-gn9r2da4/src/Jabba.sol:40:1:\n   |\n40 | contract Jabba {\n   | ^ (Relevant source part starts here and spans across multiple lines).\n\n\n\n",
     "killed_by": [
       "halmos:setUp"
     ],
     "status": "ucciso",
-    "seconds": 11
+    "seconds": 4,
+    "halmos": {},
+    "note": "Certora non esegue il costruttore: nessun risultato quando il deploy fa sempre revert"
   },
   {
     "id": "g10",
     "kind": "gambit",
     "target": "",
     "description": "AssignmentMutation: -        _locked = true; / +        /// AssignmentMutation(`true` |==> `false`) of: `_locked = true;` / +        _locked = false;",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -588,17 +665,77 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 307
+    "seconds": 375,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g11",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (a.maker == address(0) || b.maker == address(0)) revert ZeroMaker(); / +        /// IfStatementMutation(`a.maker == address(0) || b.maker == address(0)` |==> `true`) of: `if (a.maker == address(0) || b.maker == address(0)) revert ZeroMaker();` / +        if (true) revert ZeroMaker();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 89,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -613,64 +750,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 113
+    }
   },
   {
     "id": "g12",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (a.maker == address(0) || b.maker == address(0)) revert ZeroMaker(); / +        /// IfStatementMutation(`a.maker == address(0) || b.maker == address(0)` |==> `false`) of: `if (a.maker == address(0) || b.maker == address(0)) revert ZeroMaker();` / +        if (false) revert ZeroMaker();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -683,17 +776,77 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 308
+    "seconds": 345,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g13",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (a.maker == b.maker) revert SelfMatch(); / +        /// IfStatementMutation(`a.maker == b.maker` |==> `true`) of: `if (a.maker == b.maker) revert SelfMatch();` / +        if (true) revert SelfMatch();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 74,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -708,64 +861,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 118
+    }
   },
   {
     "id": "g14",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (a.maker == b.maker) revert SelfMatch(); / +        /// IfStatementMutation(`a.maker == b.maker` |==> `false`) of: `if (a.maker == b.maker) revert SelfMatch();` / +        if (false) revert SelfMatch();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -778,17 +887,77 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 300
+    "seconds": 365,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g15",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSell == a.order.buyToken) revert SameToken(); / +        /// IfStatementMutation(`aSell == a.order.buyToken` |==> `true`) of: `if (aSell == a.order.buyToken) revert SameToken();` / +        if (true) revert SameToken();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 88,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -803,64 +972,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 126
+    }
   },
   {
     "id": "g16",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSell == a.order.buyToken) revert SameToken(); / +        /// IfStatementMutation(`aSell == a.order.buyToken` |==> `false`) of: `if (aSell == a.order.buyToken) revert SameToken();` / +        if (false) revert SameToken();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -873,17 +998,77 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 300
+    "seconds": 349,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g17",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSell != b.order.buyToken || bSell != a.order.buyToken) revert TokenMismatch(); / +        /// IfStatementMutation(`aSell != b.order.buyToken || bSell != a.order.buyToken` |==> `true`) of: `if (aSell != b.order.buyToken || bSell != a.order.buyToken) revert TokenMismatch();` / +        if (true) revert TokenMismatch();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 76,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -898,38 +1083,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 124
+    }
   },
   {
     "id": "g18",
@@ -937,10 +1091,13 @@
     "target": "",
     "description": "IfStatementMutation: -        if (aSell != b.order.buyToken || bSell != a.order.buyToken) revert TokenMismatch(); / +        /// IfStatementMutation(`aSell != b.order.buyToken || bSell != a.order.buyToken` |==> `false`) of: `if (aSell != b.order.buyToken || bSell != a.order.buyToken) revert TokenMismatch();` / +        if (false) revert TokenMismatch();",
     "halmos": {
+      "check_C_constructor": "PASS",
       "check_H_orderHash": "PASS",
+      "check_I1_general": "FAIL",
       "check_I1_receipt": "PASS",
       "check_I2_exactGive": "PASS",
       "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
       "check_I3_onceAndWhole": "PASS",
       "check_I4_noResidue": "PASS",
       "check_I4_onlyTreasurySetsFee": "PASS",
@@ -949,13 +1106,19 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
       "check_live_validMatchSucceeds": "PASS"
     },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "FAIL",
+      "I1_general#msg": [
+        "aGot == to_mathint(b.permit.permitted.am..."
+      ],
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -970,15 +1133,58 @@
         "true"
       ]
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 297
+    "killed_by": [
+      "halmos:check_I1_general",
+      "certora:I1_general"
+    ],
+    "status": "ucciso",
+    "seconds": 408
   },
   {
     "id": "g19",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0) revert ZeroAmount(); / +        /// IfStatementMutation(`aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0` |==> `true`) of: `if (aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0) revert ZeroAmount();` / +        if (true) revert ZeroAmount();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 86,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -993,64 +1199,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 125
+    }
   },
   {
     "id": "g2",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (treasury == address(0)) revert ZeroAddress(); / +        /// IfStatementMutation(`treasury == address(0)` |==> `false`) of: `if (treasury == address(0)) revert ZeroAddress();` / +        if (false) revert ZeroAddress();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1063,37 +1225,46 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 360
+    "killed_by": [
+      "halmos:check_C_constructor"
+    ],
+    "status": "ucciso",
+    "seconds": 373,
+    "halmos": {
+      "check_C_constructor": "FAIL",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g20",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0) revert ZeroAmount(); / +        /// IfStatementMutation(`aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0` |==> `false`) of: `if (aSellAmt == 0 || bSellAmt == 0 || a.order.buyAmount == 0 || b.order.buyAmount == 0) revert ZeroAmount();` / +        if (false) revert ZeroAmount();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1106,17 +1277,77 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 268
+    "seconds": 375,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g21",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (aSellAmt < b.order.buyAmount || bSellAmt < a.order.buyAmount) revert NotCrossed(); / +        /// IfStatementMutation(`aSellAmt < b.order.buyAmount || bSellAmt < a.order.buyAmount` |==> `true`) of: `if (aSellAmt < b.order.buyAmount || bSellAmt < a.order.buyAmount) revert NotCrossed();` / +        if (true) revert NotCrossed();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 90,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1131,38 +1362,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 114
+    }
   },
   {
     "id": "g22",
@@ -1318,6 +1518,46 @@
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (msg.value != fee) revert WrongFee(); / +        /// IfStatementMutation(`msg.value != fee` |==> `true`) of: `if (msg.value != fee) revert WrongFee();` / +        if (true) revert WrongFee();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 92,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1332,38 +1572,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 137
+    }
   },
   {
     "id": "g26",
@@ -1419,6 +1628,46 @@
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        _pull(a, b.maker); / +        /// DeleteExpressionMutation(`_pull(a, b.maker)` |==> `assert(true)`) of: `_pull(a, b.maker);` / +        assert(true);",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 254,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1433,44 +1682,53 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 273
+    }
   },
   {
     "id": "g28",
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        _pull(b, a.maker); / +        /// DeleteExpressionMutation(`_pull(b, a.maker)` |==> `assert(true)`) of: `_pull(b, a.maker);` / +        assert(true);",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 270,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1485,44 +1743,53 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 187
+    }
   },
   {
     "id": "g29",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// IfStatementMutation(`IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt` |==> `true`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (true) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 142,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1537,44 +1804,42 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 172
+    }
   },
   {
     "id": "g3",
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        TREASURY = treasury; / +        /// DeleteExpressionMutation(`TREASURY = treasury` |==> `assert(true)`) of: `TREASURY = treasury;` / +        assert(true);",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "halmos:check_I4_onlyTreasurySetsFee",
+      "halmos:check_I5_feeForwarded",
+      "halmos:check_live_setFeeAndPost"
+    ],
+    "status": "ucciso",
+    "seconds": 352,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1589,33 +1854,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "FAIL",
       "check_live_validMatchSucceeds": "PASS"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_I4_onlyTreasurySetsFee",
-      "halmos:check_I5_feeForwarded",
-      "halmos:check_live_setFeeAndPost"
-    ],
-    "status": "ucciso",
-    "seconds": 361
+    }
   },
   {
     "id": "g30",
@@ -1623,10 +1862,13 @@
     "target": "",
     "description": "IfStatementMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// IfStatementMutation(`IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt` |==> `false`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (false) revert ShortReceipt();",
     "halmos": {
+      "check_C_constructor": "PASS",
       "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
       "check_I1_receipt": "PASS",
       "check_I2_exactGive": "PASS",
       "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "FAIL",
       "check_I3_onceAndWhole": "PASS",
       "check_I4_noResidue": "PASS",
       "check_I4_onlyTreasurySetsFee": "PASS",
@@ -1635,13 +1877,19 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
       "check_live_validMatchSucceeds": "PASS"
     },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1656,9 +1904,12 @@
         "true"
       ]
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 284
+    "killed_by": [
+      "halmos:check_I2_nonConformingReceiptA",
+      "certora:I2_nonConformingReceiptA"
+    ],
+    "status": "ucciso",
+    "seconds": 380
   },
   {
     "id": "g31",
@@ -1666,10 +1917,13 @@
     "target": "",
     "description": "SwapArgumentsOperatorMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// SwapArgumentsOperatorMutation(`IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt` |==> `bSellAmt < IERC20Balance(bSell).balanceOf(a.maker) - a0`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (bSellAmt < IERC20Balance(bSell).balanceOf(a.maker) - a0) revert ShortReceipt();",
     "halmos": {
+      "check_C_constructor": "PASS",
       "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
       "check_I1_receipt": "PASS",
       "check_I2_exactGive": "PASS",
       "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "FAIL",
       "check_I3_onceAndWhole": "PASS",
       "check_I4_noResidue": "PASS",
       "check_I4_onlyTreasurySetsFee": "PASS",
@@ -1678,13 +1932,19 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
       "check_live_validMatchSucceeds": "PASS"
     },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1699,9 +1959,12 @@
         "true"
       ]
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 299
+    "killed_by": [
+      "halmos:check_I2_nonConformingReceiptA",
+      "certora:I2_nonConformingReceiptA"
+    ],
+    "status": "ucciso",
+    "seconds": 401
   },
   {
     "id": "g32",
@@ -1709,10 +1972,13 @@
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `+`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(bSell).balanceOf(a.maker)+a0 < bSellAmt) revert ShortReceipt();",
     "halmos": {
+      "check_C_constructor": "PASS",
       "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
       "check_I1_receipt": "PASS",
       "check_I2_exactGive": "PASS",
       "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "FAIL",
       "check_I3_onceAndWhole": "PASS",
       "check_I4_noResidue": "PASS",
       "check_I4_onlyTreasurySetsFee": "PASS",
@@ -1721,13 +1987,25 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
       "check_live_validMatchSucceeds": "PASS"
     },
+    "killed_by": [
+      "halmos:check_I2_nonConformingReceiptA",
+      "certora:I2_nonConformingReceiptA"
+    ],
+    "status": "ucciso",
+    "seconds": 63,
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1741,16 +2019,48 @@
       "live_matchPossible#msg": [
         "true"
       ]
-    },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 294
+    }
   },
   {
     "id": "g33",
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `*`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(bSell).balanceOf(a.maker)*a0 < bSellAmt) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I2_nonConformingReceiptA",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 366,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1765,37 +2075,48 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 303
+    }
   },
   {
     "id": "g34",
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `/`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(bSell).balanceOf(a.maker)/a0 < bSellAmt) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I2_nonConformingReceiptA",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 377,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1810,37 +2131,44 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 294
+    }
   },
   {
     "id": "g35",
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `%`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(bSell).balanceOf(a.maker)%a0 < bSellAmt) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 356,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1855,45 +2183,23 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 256
+    }
   },
   {
     "id": "g36",
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `**`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(bSell).balanceOf(a.maker)**a0 < bSellAmt) revert ShortReceipt();",
-    "halmos": {
-      "timeout": "TIMEOUT"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "FAIL",
+      "I2_nonConformingReceiptA#msg": [
+        "FeeOnTransferToken.balanceOf(a.maker) - ..."
+      ],
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -1906,17 +2212,68 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
+      ],
+      "live_postValid": "SUCCESS",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
       ]
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 908
+    "killed_by": [
+      "certora:I2_nonConformingReceiptA",
+      "certora:live_validMatchNeverReverts"
+    ],
+    "status": "ucciso",
+    "seconds": 833,
+    "halmos": {
+      "timeout": "TIMEOUT"
+    }
   },
   {
     "id": "g37",
     "kind": "gambit",
     "target": "",
     "description": "SwapArgumentsOperatorMutation: -        if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt(); / +        /// SwapArgumentsOperatorMutation(`IERC20Balance(bSell).balanceOf(a.maker) - a0` |==> `a0 - IERC20Balance(bSell).balanceOf(a.maker)`) of: `if (IERC20Balance(bSell).balanceOf(a.maker) - a0 < bSellAmt) revert ShortReceipt();` / +        if (a0 - IERC20Balance(bSell).balanceOf(a.maker) < bSellAmt) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 341,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1931,44 +2288,53 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 228
+    }
   },
   {
     "id": "g38",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt(); / +        /// IfStatementMutation(`IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt` |==> `true`) of: `if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();` / +        if (true) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 169,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -1983,38 +2349,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 132
+    }
   },
   {
     "id": "g39",
@@ -2070,6 +2405,34 @@
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        fee = initialFee; / +        /// DeleteExpressionMutation(`fee = initialFee` |==> `assert(true)`) of: `fee = initialFee;` / +        assert(true);",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "halmos:check_I4_onlyTreasurySetsFee",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 363,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2084,32 +2447,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_I4_onlyTreasurySetsFee",
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 330
+    }
   },
   {
     "id": "g40",
@@ -2166,10 +2504,13 @@
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `+`) of: `if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(aSell).balanceOf(b.maker)+b0 < aSellAmt) revert ShortReceipt();",
     "halmos": {
+      "check_C_constructor": "PASS",
       "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
       "check_I1_receipt": "PASS",
       "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceipt": "FAIL",
+      "check_I2_nonConformingReceiptA": "PASS",
       "check_I3_onceAndWhole": "PASS",
       "check_I4_noResidue": "PASS",
       "check_I4_onlyTreasurySetsFee": "PASS",
@@ -2178,8 +2519,15 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
       "check_live_validMatchSucceeds": "PASS"
     },
+    "killed_by": [
+      "halmos:check_I2_nonConformingReceipt",
+      "certora:I2_nonConformingReceipt"
+    ],
+    "status": "ucciso",
+    "seconds": 63,
     "certora": {
       "H_orderHash": "SUCCESS",
       "I1_receipt": "SUCCESS",
@@ -2201,12 +2549,7 @@
       "live_matchPossible#msg": [
         "true"
       ]
-    },
-    "killed_by": [
-      "certora:I2_nonConformingReceipt"
-    ],
-    "status": "ucciso",
-    "seconds": 310
+    }
   },
   {
     "id": "g42",
@@ -2311,6 +2654,37 @@
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `%`) of: `if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(aSell).balanceOf(b.maker)%b0 < aSellAmt) revert ShortReceipt();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 377,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2325,48 +2699,23 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 256
+    }
   },
   {
     "id": "g45",
     "kind": "gambit",
     "target": "",
     "description": "BinaryOpMutation: -        if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt(); / +        /// BinaryOpMutation(`-` |==> `**`) of: `if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();` / +        if (IERC20Balance(aSell).balanceOf(b.maker)**b0 < aSellAmt) revert ShortReceipt();",
-    "halmos": {
-      "timeout": "TIMEOUT"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "FAIL",
       "I2_nonConformingReceipt#msg": [
         "FeeOnTransferToken.balanceOf(b.maker) - ..."
       ],
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2379,39 +2728,35 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
+      ],
+      "live_postValid": "SUCCESS",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
       ]
     },
     "killed_by": [
-      "certora:I2_nonConformingReceipt"
+      "certora:I2_nonConformingReceipt",
+      "certora:live_validMatchNeverReverts"
     ],
     "status": "ucciso",
-    "seconds": 899
+    "seconds": 578,
+    "halmos": {
+      "timeout": "TIMEOUT"
+    }
   },
   {
     "id": "g46",
     "kind": "gambit",
     "target": "",
     "description": "SwapArgumentsOperatorMutation: -        if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt(); / +        /// SwapArgumentsOperatorMutation(`IERC20Balance(aSell).balanceOf(b.maker) - b0` |==> `b0 - IERC20Balance(aSell).balanceOf(b.maker)`) of: `if (IERC20Balance(aSell).balanceOf(b.maker) - b0 < aSellAmt) revert ShortReceipt();` / +        if (b0 - IERC20Balance(aSell).balanceOf(b.maker) < aSellAmt) revert ShortReceipt();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "FAIL"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
       "I1_receipt": "VACUOUS",
       "I2_exactGive": "VACUOUS",
       "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
       "I3_onceAndWhole": "VACUOUS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "VACUOUS",
@@ -2421,29 +2766,30 @@
       "I6_conservation": "VACUOUS",
       "I7_counterpartyRecipient": "VACUOUS",
       "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
     },
     "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
+      "certora:I1_general(vacua)",
       "certora:I1_receipt(vacua)",
       "certora:I2_exactGive(vacua)",
       "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
       "certora:I3_onceAndWhole(vacua)",
       "certora:I4_noResidue(vacua)",
       "certora:I4_onlySetFeeWritesFee(vacua)",
       "certora:I5_feeForwarded(vacua)",
       "certora:I6_conservation(vacua)",
       "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
     ],
     "status": "ucciso",
-    "seconds": 296
-  },
-  {
-    "id": "g47",
-    "kind": "gambit",
-    "target": "",
-    "description": "IfStatementMutation: -        if (msg.value != 0) { / +        /// IfStatementMutation(`msg.value != 0` |==> `true`) of: `if (msg.value != 0) {` / +        if (true) {",
+    "seconds": 331,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2457,13 +2803,21 @@
       "check_I7_counterpartyRecipient": "PASS",
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
+      "check_live_validMatchSucceeds": "FAIL"
+    }
+  },
+  {
+    "id": "g47",
+    "kind": "gambit",
+    "target": "",
+    "description": "IfStatementMutation: -        if (msg.value != 0) { / +        /// IfStatementMutation(`msg.value != 0` |==> `true`) of: `if (msg.value != 0) {` / +        if (true) {",
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2476,11 +2830,31 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 305
+    "seconds": 357,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g48",
@@ -2541,6 +2915,37 @@
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -            if (!ok) revert TreasuryTransferFailed(); / +            /// IfStatementMutation(`!ok` |==> `true`) of: `if (!ok) revert TreasuryTransferFailed();` / +            if (true) revert TreasuryTransferFailed();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "FAIL",
+      "live_validMatchNeverReverts#msg": [
+        "un match valido fa revert"
+      ]
+    },
+    "killed_by": [
+      "certora:live_validMatchNeverReverts",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 333,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2555,12 +2960,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
+    }
+  },
+  {
+    "id": "g5",
+    "kind": "gambit",
+    "target": "",
+    "description": "AssignmentMutation: -        fee = initialFee; / +        /// AssignmentMutation(`initialFee` |==> `0`) of: `fee = initialFee;` / +        fee = 0;",
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2573,19 +2986,15 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [
+      "halmos:check_I4_onlyTreasurySetsFee",
       "halmos:check_live_validMatchSucceeds"
     ],
     "status": "ucciso",
-    "seconds": 289
-  },
-  {
-    "id": "g5",
-    "kind": "gambit",
-    "target": "",
-    "description": "AssignmentMutation: -        fee = initialFee; / +        /// AssignmentMutation(`initialFee` |==> `0`) of: `fee = initialFee;` / +        fee = 0;",
+    "seconds": 347,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2600,32 +3009,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_I4_onlyTreasurySetsFee",
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 329
+    }
   },
   {
     "id": "g50",
@@ -2684,26 +3068,13 @@
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        _locked = false; / +        /// DeleteExpressionMutation(`_locked = false` |==> `assert(true)`) of: `_locked = false;` / +        assert(true);",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2716,37 +3087,46 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 274
+    "killed_by": [
+      "halmos:check_live_twoMatchesSameTx"
+    ],
+    "status": "ucciso",
+    "seconds": 314,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "FAIL",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g52",
     "kind": "gambit",
     "target": "",
     "description": "AssignmentMutation: -        _locked = false; / +        /// AssignmentMutation(`false` |==> `true`) of: `_locked = false;` / +        _locked = true;",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2759,17 +3139,73 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
-    "killed_by": [],
-    "status": "sopravvissuto",
-    "seconds": 273
+    "killed_by": [
+      "halmos:check_live_twoMatchesSameTx"
+    ],
+    "status": "ucciso",
+    "seconds": 330,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "FAIL",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g53",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.maker == address(0)) revert ZeroMaker(); / +        /// IfStatementMutation(`s.maker == address(0)` |==> `true`) of: `if (s.maker == address(0)) revert ZeroMaker();` / +        if (true) revert ZeroMaker();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "VACUOUS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_postValid": "FAIL",
+      "live_postValid#msg": [
+        "un post valido fa revert"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I8_postNoEffects(vacua)",
+      "certora:live_postValid",
+      "halmos:check_live_setFeeAndPost"
+    ],
+    "status": "ucciso",
+    "seconds": 372,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2784,59 +3220,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "FAIL",
       "check_live_validMatchSucceeds": "PASS"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "VACUOUS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_setFeeAndPost",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I8_postNoEffects(vacua)"
-    ],
-    "status": "ucciso",
-    "seconds": 303
+    }
   },
   {
     "id": "g54",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.maker == address(0)) revert ZeroMaker(); / +        /// IfStatementMutation(`s.maker == address(0)` |==> `false`) of: `if (s.maker == address(0)) revert ZeroMaker();` / +        if (false) revert ZeroMaker();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2849,17 +3246,71 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 298
+    "seconds": 353,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g55",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.permit.permitted.token == s.order.buyToken) revert SameToken(); / +        /// IfStatementMutation(`s.permit.permitted.token == s.order.buyToken` |==> `true`) of: `if (s.permit.permitted.token == s.order.buyToken) revert SameToken();` / +        if (true) revert SameToken();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "VACUOUS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_postValid": "FAIL",
+      "live_postValid#msg": [
+        "un post valido fa revert"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I8_postNoEffects(vacua)",
+      "certora:live_postValid",
+      "halmos:check_live_setFeeAndPost"
+    ],
+    "status": "ucciso",
+    "seconds": 375,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2874,59 +3325,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "FAIL",
       "check_live_validMatchSucceeds": "PASS"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "VACUOUS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_setFeeAndPost",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I8_postNoEffects(vacua)"
-    ],
-    "status": "ucciso",
-    "seconds": 295
+    }
   },
   {
     "id": "g56",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.permit.permitted.token == s.order.buyToken) revert SameToken(); / +        /// IfStatementMutation(`s.permit.permitted.token == s.order.buyToken` |==> `false`) of: `if (s.permit.permitted.token == s.order.buyToken) revert SameToken();` / +        if (false) revert SameToken();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -2939,17 +3351,71 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 309
+    "seconds": 356,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g57",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount(); / +        /// IfStatementMutation(`s.permit.permitted.amount == 0 || s.order.buyAmount == 0` |==> `true`) of: `if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();` / +        if (true) revert ZeroAmount();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "VACUOUS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_postValid": "FAIL",
+      "live_postValid#msg": [
+        "un post valido fa revert"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I8_postNoEffects(vacua)",
+      "certora:live_postValid",
+      "halmos:check_live_setFeeAndPost"
+    ],
+    "status": "ucciso",
+    "seconds": 237,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -2964,59 +3430,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "FAIL",
       "check_live_validMatchSucceeds": "PASS"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "VACUOUS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_live_setFeeAndPost",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I8_postNoEffects(vacua)"
-    ],
-    "status": "ucciso",
-    "seconds": 306
+    }
   },
   {
     "id": "g58",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount(); / +        /// IfStatementMutation(`s.permit.permitted.amount == 0 || s.order.buyAmount == 0` |==> `false`) of: `if (s.permit.permitted.amount == 0 || s.order.buyAmount == 0) revert ZeroAmount();` / +        if (false) revert ZeroAmount();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -3029,11 +3456,31 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 327
+    "seconds": 327,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g59",
@@ -3092,6 +3539,34 @@
     "kind": "gambit",
     "target": "",
     "description": "AssignmentMutation: -        fee = initialFee; / +        /// AssignmentMutation(`initialFee` |==> `1`) of: `fee = initialFee;` / +        fee = 1;",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
+      "I1_receipt": "SUCCESS",
+      "I2_exactGive": "SUCCESS",
+      "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
+      "I3_onceAndWhole": "SUCCESS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "SUCCESS",
+      "I4_onlySetFeeWritesFee": "SUCCESS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "SUCCESS",
+      "I6_conservation": "SUCCESS",
+      "I7_counterpartyRecipient": "SUCCESS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "SUCCESS",
+      "live_matchPossible#msg": [
+        "true"
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
+    },
+    "killed_by": [
+      "halmos:check_I4_onlyTreasurySetsFee",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 337,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -3106,32 +3581,7 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "SUCCESS",
-      "I2_exactGive": "SUCCESS",
-      "I2_nonConformingReceipt": "SUCCESS",
-      "I3_onceAndWhole": "SUCCESS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "SUCCESS",
-      "I4_onlySetFeeWritesFee": "SUCCESS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "SUCCESS",
-      "I6_conservation": "SUCCESS",
-      "I7_counterpartyRecipient": "SUCCESS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "SUCCESS",
-      "live_matchPossible#msg": [
-        "true"
-      ]
-    },
-    "killed_by": [
-      "halmos:check_I4_onlyTreasurySetsFee",
-      "halmos:check_live_validMatchSucceeds"
-    ],
-    "status": "ucciso",
-    "seconds": 298
+    }
   },
   {
     "id": "g60",
@@ -3337,6 +3787,43 @@
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (_locked) revert Reentrancy(); / +        /// IfStatementMutation(`_locked` |==> `true`) of: `if (_locked) revert Reentrancy();` / +        if (true) revert Reentrancy();",
+    "certora": {
+      "H_orderHash": "SUCCESS",
+      "I1_general": "VACUOUS",
+      "I1_receipt": "VACUOUS",
+      "I2_exactGive": "VACUOUS",
+      "I2_nonConformingReceipt": "VACUOUS",
+      "I2_nonConformingReceiptA": "VACUOUS",
+      "I3_onceAndWhole": "VACUOUS",
+      "I3_usedNonceReverts": "SUCCESS",
+      "I4_noResidue": "VACUOUS",
+      "I4_onlySetFeeWritesFee": "VACUOUS",
+      "I4_setFeeOnlyTreasury": "SUCCESS",
+      "I5_feeForwarded": "VACUOUS",
+      "I6_conservation": "VACUOUS",
+      "I7_counterpartyRecipient": "VACUOUS",
+      "I8_postNoEffects": "SUCCESS",
+      "live_matchPossible": "FAIL",
+      "live_validMatchNeverReverts": "VACUOUS"
+    },
+    "killed_by": [
+      "certora:I1_general(vacua)",
+      "certora:I1_receipt(vacua)",
+      "certora:I2_exactGive(vacua)",
+      "certora:I2_nonConformingReceipt(vacua)",
+      "certora:I2_nonConformingReceiptA(vacua)",
+      "certora:I3_onceAndWhole(vacua)",
+      "certora:I4_noResidue(vacua)",
+      "certora:I4_onlySetFeeWritesFee(vacua)",
+      "certora:I5_feeForwarded(vacua)",
+      "certora:I6_conservation(vacua)",
+      "certora:I7_counterpartyRecipient(vacua)",
+      "certora:live_matchPossible",
+      "certora:live_validMatchNeverReverts(vacua)",
+      "halmos:check_live_validMatchSucceeds"
+    ],
+    "status": "ucciso",
+    "seconds": 65,
     "halmos": {
       "check_H_orderHash": "PASS",
       "check_I1_receipt": "PASS",
@@ -3351,64 +3838,20 @@
       "check_I8_postNoEffects": "PASS",
       "check_live_setFeeAndPost": "PASS",
       "check_live_validMatchSucceeds": "FAIL"
-    },
-    "certora": {
-      "H_orderHash": "SUCCESS",
-      "I1_receipt": "VACUOUS",
-      "I2_exactGive": "VACUOUS",
-      "I2_nonConformingReceipt": "VACUOUS",
-      "I3_onceAndWhole": "VACUOUS",
-      "I3_usedNonceReverts": "SUCCESS",
-      "I4_noResidue": "VACUOUS",
-      "I4_onlySetFeeWritesFee": "VACUOUS",
-      "I4_setFeeOnlyTreasury": "SUCCESS",
-      "I5_feeForwarded": "VACUOUS",
-      "I6_conservation": "VACUOUS",
-      "I7_counterpartyRecipient": "VACUOUS",
-      "I8_postNoEffects": "SUCCESS",
-      "live_matchPossible": "FAIL"
-    },
-    "killed_by": [
-      "halmos:check_live_validMatchSucceeds",
-      "certora:I1_receipt(vacua)",
-      "certora:I2_exactGive(vacua)",
-      "certora:I2_nonConformingReceipt(vacua)",
-      "certora:I3_onceAndWhole(vacua)",
-      "certora:I4_noResidue(vacua)",
-      "certora:I4_onlySetFeeWritesFee(vacua)",
-      "certora:I5_feeForwarded(vacua)",
-      "certora:I6_conservation(vacua)",
-      "certora:I7_counterpartyRecipient(vacua)",
-      "certora:live_matchPossible"
-    ],
-    "status": "ucciso",
-    "seconds": 118
+    }
   },
   {
     "id": "g8",
     "kind": "gambit",
     "target": "",
     "description": "IfStatementMutation: -        if (_locked) revert Reentrancy(); / +        /// IfStatementMutation(`_locked` |==> `false`) of: `if (_locked) revert Reentrancy();` / +        if (false) revert Reentrancy();",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -3421,37 +3864,44 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 293
+    "seconds": 366,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   },
   {
     "id": "g9",
     "kind": "gambit",
     "target": "",
     "description": "DeleteExpressionMutation: -        _locked = true; / +        /// DeleteExpressionMutation(`_locked = true` |==> `assert(true)`) of: `_locked = true;` / +        assert(true);",
-    "halmos": {
-      "check_H_orderHash": "PASS",
-      "check_I1_receipt": "PASS",
-      "check_I2_exactGive": "PASS",
-      "check_I2_nonConformingReceipt": "PASS",
-      "check_I3_onceAndWhole": "PASS",
-      "check_I4_noResidue": "PASS",
-      "check_I4_onlyTreasurySetsFee": "PASS",
-      "check_I5_feeForwarded": "PASS",
-      "check_I6_conservation": "PASS",
-      "check_I7_counterpartyRecipient": "PASS",
-      "check_I8_postNoEffects": "PASS",
-      "check_live_setFeeAndPost": "PASS",
-      "check_live_validMatchSucceeds": "PASS"
-    },
     "certora": {
       "H_orderHash": "SUCCESS",
+      "I1_general": "SUCCESS",
       "I1_receipt": "SUCCESS",
       "I2_exactGive": "SUCCESS",
       "I2_nonConformingReceipt": "SUCCESS",
+      "I2_nonConformingReceiptA": "SUCCESS",
       "I3_onceAndWhole": "SUCCESS",
       "I3_usedNonceReverts": "SUCCESS",
       "I4_noResidue": "SUCCESS",
@@ -3464,10 +3914,30 @@
       "live_matchPossible": "SUCCESS",
       "live_matchPossible#msg": [
         "true"
-      ]
+      ],
+      "live_validMatchNeverReverts": "SUCCESS"
     },
     "killed_by": [],
     "status": "sopravvissuto",
-    "seconds": 303
+    "seconds": 356,
+    "halmos": {
+      "check_C_constructor": "PASS",
+      "check_H_orderHash": "PASS",
+      "check_I1_general": "PASS",
+      "check_I1_receipt": "PASS",
+      "check_I2_exactGive": "PASS",
+      "check_I2_nonConformingReceipt": "PASS",
+      "check_I2_nonConformingReceiptA": "PASS",
+      "check_I3_onceAndWhole": "PASS",
+      "check_I4_noResidue": "PASS",
+      "check_I4_onlyTreasurySetsFee": "PASS",
+      "check_I5_feeForwarded": "PASS",
+      "check_I6_conservation": "PASS",
+      "check_I7_counterpartyRecipient": "PASS",
+      "check_I8_postNoEffects": "PASS",
+      "check_live_setFeeAndPost": "PASS",
+      "check_live_twoMatchesSameTx": "PASS",
+      "check_live_validMatchSucceeds": "PASS"
+    }
   }
 ]

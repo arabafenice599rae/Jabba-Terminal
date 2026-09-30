@@ -5,3 +5,4 @@ broadcast/
 .certora_internal/
 emv-*/
 certora/mutants/out/
+__pycache__/

@@ -161,11 +161,19 @@ contract JabbaHalmos is Test {
 
     /// @notice I2 (non conformi): con un token fee-on-transfer, se il match riesce ogni maker ha
     ///         comunque ricevuto almeno quanto la controparte ha ceduto.
-    function check_I2_nonConformingReceipt(uint128 aSell, uint128 bSell, uint128 aBuy, uint128 bBuy, uint128 balA)
-        public
-    {
+    function check_I2_nonConformingReceipt(
+        uint128 aSell,
+        uint128 bSell,
+        uint128 aBuy,
+        uint128 bBuy,
+        uint128 balA,
+        uint128[2] memory prior
+    ) public {
         fot.mint(alice, balA);
         y.mint(bob, bSell);
+        // Saldi iniziali arbitrari di chi riceve: la verifica usa il delta, non il saldo finale.
+        y.mint(alice, prior[0]);
+        fot.mint(bob, prior[1]);
         Jabba.Side memory a = _side(alice, address(fot), aSell, address(y), aBuy, 1);
         Jabba.Side memory b = _side(bob, address(y), bSell, address(fot), bBuy, 1);
         uint256 a0 = y.balanceOf(alice);
@@ -366,11 +374,19 @@ contract JabbaHalmos is Test {
 
     /// @notice I2 (non conformi), token fee-on-transfer venduto da B: A riceve comunque almeno
     ///         quanto B ha ceduto. Complementare a check_I2_nonConformingReceipt (fot venduto da A).
-    function check_I2_nonConformingReceiptA(uint128 aSell, uint128 bSell, uint128 aBuy, uint128 bBuy, uint128 balB)
-        public
-    {
+    function check_I2_nonConformingReceiptA(
+        uint128 aSell,
+        uint128 bSell,
+        uint128 aBuy,
+        uint128 bBuy,
+        uint128 balB,
+        uint128[2] memory prior
+    ) public {
         x.mint(alice, aSell);
         fot.mint(bob, balB);
+        // Saldi iniziali arbitrari di chi riceve: la verifica usa il delta, non il saldo finale.
+        fot.mint(alice, prior[0]);
+        x.mint(bob, prior[1]);
         Jabba.Side memory a = _side(alice, address(x), aSell, address(fot), aBuy, 1);
         Jabba.Side memory b = _side(bob, address(fot), bSell, address(x), bBuy, 1);
         uint256 a0 = fot.balanceOf(alice);

@@ -31,6 +31,8 @@ methods {
     function tokX.balanceOf(address) external returns (uint256) envfree;
     function tokY.balanceOf(address) external returns (uint256) envfree;
     function tokZ.balanceOf(address) external returns (uint256) envfree;
+    function tokX.allowance(address, address) external returns (uint256) envfree;
+    function tokY.allowance(address, address) external returns (uint256) envfree;
     function fot.balanceOf(address) external returns (uint256) envfree;
 
     function oracle.orderHash(address, address, uint256, uint256, uint256, address, uint256, address, bytes32)
@@ -65,6 +67,48 @@ rule live_matchPossible(env e, Jabba.Side a, Jabba.Side b) {
     setupXY(e, a, b);
     matchOrders(e, a, b);
     satisfy true;
+}
+
+/// Vivacità universale: due ordini validi e incrociati, con nonce liberi, saldi e allowance
+/// sufficienti e fee esatta, vengono sempre eseguiti (nessun revert). Complementare a
+/// live_matchPossible, che chiede solo l'esistenza di un match riuscito.
+rule live_validMatchNeverReverts(env e, Jabba.Side a, Jabba.Side b) {
+    setupXY(e, a, b);
+    uint256 aSell = a.permit.permitted.amount;
+    uint256 bSell = b.permit.permitted.amount;
+    require a.maker != 0 && b.maker != 0 && a.maker != b.maker;
+    require a.order.buyAmount > 0 && b.order.buyAmount > 0;
+    require aSell >= b.order.buyAmount && bSell >= a.order.buyAmount;
+    require e.msg.value == fee();
+    require e.block.timestamp <= a.permit.deadline && e.block.timestamp <= b.permit.deadline;
+    require !p2.nonceUsed(a.maker, a.permit.nonce) && !p2.nonceUsed(b.maker, b.permit.nonce);
+    require p2.pulls(a.maker) < max_uint256 && p2.pulls(b.maker) < max_uint256; // contatore del modello
+    require tokX.balanceOf(a.maker) >= aSell && tokY.balanceOf(b.maker) >= bSell;
+    require tokX.allowance(a.maker, p2) == max_uint256 && tokY.allowance(b.maker, p2) == max_uint256;
+    // Nessun overflow nei saldi dei destinatari e negli ETH.
+    require to_mathint(tokX.balanceOf(b.maker)) + aSell <= max_uint256;
+    require to_mathint(tokY.balanceOf(a.maker)) + bSell <= max_uint256;
+    require nativeBalances[e.msg.sender] >= e.msg.value;
+    require to_mathint(nativeBalances[TREASURY()]) + e.msg.value <= max_uint256;
+    require nativeBalances[currentContract] == 0;
+    // Inizio di una transazione: lo storage transient (lock di rientro) è azzerato.
+    require !currentContract._locked;
+    // Firme di lunghezza ragionevole (il modello non le verifica).
+    require a.sig.length <= 96 && b.sig.length <= 96;
+
+    matchOrders@withrevert(e, a, b);
+    assert !lastReverted, "un match valido fa revert";
+}
+
+/// Vivacità di post: un ordine ben formato si pubblica sempre (§5).
+rule live_postValid(env e, Jabba.Side s) {
+    require s.maker != 0;
+    require s.permit.permitted.token != s.order.buyToken;
+    require s.permit.permitted.amount > 0 && s.order.buyAmount > 0;
+    require e.msg.value == 0;
+    require s.sig.length <= 96;
+    post@withrevert(e, s);
+    assert !lastReverted, "un post valido fa revert";
 }
 
 // ------------------------------------------------------------------ I1
