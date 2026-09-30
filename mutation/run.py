@@ -20,6 +20,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -33,12 +34,16 @@ ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
 
 def sh(cmd, cwd, timeout, env=None):
+    # Nuova sessione: allo scadere del timeout si termina l'intero gruppo (sh e figli, es. halmos).
+    p = subprocess.Popen(cmd, cwd=cwd, env=env, shell=True, text=True, start_new_session=True,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     try:
-        p = subprocess.run(cmd, cwd=cwd, env=env, shell=True, capture_output=True, text=True, timeout=timeout)
-        return p.returncode, ANSI.sub("", p.stdout + p.stderr)
-    except subprocess.TimeoutExpired as e:
-        out = (e.stdout or b"") + (e.stderr or b"")
-        return 124, out.decode(errors="replace") if isinstance(out, bytes) else out
+        out, _ = p.communicate(timeout=timeout)
+        return p.returncode, ANSI.sub("", out)
+    except subprocess.TimeoutExpired:
+        os.killpg(p.pid, signal.SIGKILL)
+        out, _ = p.communicate()
+        return 124, ANSI.sub("", out or "")
 
 
 def load_targeted():
@@ -92,7 +97,9 @@ def run_halmos(ws):
     rc, out = sh("forge build --ast -q", ws, 900)
     if rc != 0:
         return None, out
-    _, out = sh("halmos --contract JabbaHalmos --loop 8 --solver-timeout-assertion 0", ws, 1800)
+    rc, out = sh("halmos --contract JabbaHalmos --loop 8 --solver-timeout-assertion 60000", ws, 600)
+    if rc == 124:
+        return {"timeout": "TIMEOUT"}, out
     res = {name: status for status, name in HALMOS_RE.findall(out)}
     return res, out
 
@@ -144,8 +151,9 @@ def evaluate(m, base, do_halmos, do_certora):
             r["certora"], log = run_certora(ws, m["id"])
             if r["certora"] is None:
                 r["certora_error"] = log[-2000:]
-        killers = [f"halmos:{k}" for k, v in (r.get("halmos") or {}).items() if v != "PASS"]
-        if do_halmos and not r["halmos"]:
+        # TIMEOUT di Halmos (intero run o singolo check) non è una rilevazione.
+        killers = [f"halmos:{k}" for k, v in (r.get("halmos") or {}).items() if v not in ("PASS", "TIMEOUT")]
+        if do_halmos and not r["halmos"]:  # {"timeout": ...} non è vuoto
             killers.append("halmos:setUp")  # nessun check eseguito: il deploy di setUp fallisce
         killers += [
             f"certora:{k}" + ("(vacua)" if v == "VACUOUS" else "")
