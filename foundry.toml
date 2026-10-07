@@ -10,6 +10,9 @@ via_ir = true
 optimizer = true
 optimizer_runs = 1000000
 bytecode_hash = "none"
+# Halmos non supporta vm.deployCode, che il dynamic test linking usa al posto di `new` nei test
+# (attivo di default nelle versioni recenti di Foundry).
+dynamic_test_linking = false
 remappings = [
   "forge-std/=lib/forge-std/src/",
   "permit2/=lib/permit2/",
