@@ -17,8 +17,12 @@ test/utils/Base.sol         harness: Permit2 reale, firme EIP-712 indipendenti d
 test/utils/Mocks.sol        token di test: conforme, fee-on-transfer, pausa/blocklist, malevolo, rientrante
 script/Deploy.s.sol         deploy CREATE2
 docs/SPEC.md                specifica v2.4
+docs/FORMAL.md              verifica formale I1–I8: Halmos, Certora, mutation testing
+test/formal/                check Halmos e modello di Permit2
+certora/                    regole Certora (Prover open source, in locale)
+mutation/                   mutazioni mirate e Gambit, risultati
 web/index.html              terminale (demo con chain simulata)
-.github/workflows/test.yml  CI: build e test
+.github/workflows/test.yml  CI: build, test e Halmos
 ```
 
 ## Setup

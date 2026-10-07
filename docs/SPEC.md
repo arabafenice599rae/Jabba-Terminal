@@ -253,7 +253,7 @@ Nessuna domanda aperta di specifica. Resta la verifica empirica dello stato corr
 5. **Test di identità dell'ordine:** stesso nonce e stessi campi del permit con maker diverso producono `orderHash` diversi. Fatto: `HashTest`.
 6. **Test di coerenza con Permit2:** `permitWitnessStructHash` calcolato dal contratto coincide con quello verificato da Permit2 per la stessa firma. Fatto: `HashTest`.
 7. **Test di firma incrociato:** ordini firmati con `eth_signTypedData_v4` da un client di riferimento, pubblicati con `post` e regolati con `matchOrders`.
-8. **Halmos** sugli invarianti I1–I8, **Certora Prover** sulle regole critiche, **Gambit** per verificare con mutazioni che le specifiche rilevino i difetti.
+8. **Halmos** sugli invarianti I1–I8, **Certora Prover** sulle regole critiche, **Gambit** per verificare con mutazioni che le specifiche rilevino i difetti. Fatto: [`docs/FORMAL.md`](FORMAL.md) (63 mutanti su 74 rilevati; sopravvissuti classificati).
 9. **Verifica on-chain e fork test su 4663:** `eth_call` su proxy, implementazione e registro degli stock token (pausa, `isBlocked`, moltiplicatore); fork test con Permit2, USDG e uno stock token reali, inclusi token in pausa, maker in blocklist e maker delegati 7702.
 10. **Deploy CREATE2** a indirizzo deterministico, sorgente verificato, `TREASURY` immutable, fee iniziale 0,00005 ETH. Script: `script/Deploy.s.sol`.
 
